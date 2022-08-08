@@ -65,7 +65,7 @@ jobs:
         nx run core:build:production
         nx run core:test
       working-directory: core/node
-    - run: npm pack --pack-destination ../..
+    - run: npm pack --pack-destination ../../..
       working-directory: core/node/dist/packages/core
     - name: Building Plugins
       run: |
