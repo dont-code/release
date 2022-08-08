@@ -64,7 +64,7 @@ jobs:
         npm install
         nx run core:build:production
         nx run core:test
-        npm pack
+        npm pack --workspace packages/core
       working-directory: core/node
     - name: Building Plugins
       run: |
