@@ -217,19 +217,19 @@ jobs:
         nx run plugin-tester:build:production --base-href "https://dont-code.net/plugin-rest/"
         nx run plugin-tester:build:production --base-href "https://dont-code.net/plugin-seed/"
     - if: ${{ success() }}
-      uses: JamesIves/github-pages-deploy-action@releases/v4.4.0
+      uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
         repository: dont-code/plugins
         branch: gh-pages # The branch the action should deploy to.
         folder: plugins/dist/apps/plugin-tester
     - if: ${{ success() }}
-      uses: JamesIves/github-pages-deploy-action@releases/v4.4.0
+      uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
         repository: dont-code/plugin-seed
         branch: gh-pages # The branch the action should deploy to.
         folder: plugin-seed/dist/apps/plugin-tester
     - if: ${{ success() }}
-      uses: JamesIves/github-pages-deploy-action@releases/v4.4.0
+      uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
         repository: dont-code/plugin-rest
         branch: gh-pages # The branch the action should deploy to.
