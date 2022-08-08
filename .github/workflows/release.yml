@@ -139,7 +139,7 @@ jobs:
     - name: Building Plugin Seed
       run: |
         npm install
-        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../core/node/dontcode-sandbox-${{inputs.version}}.tgz
+        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugins/dontcode-sandbox-${{inputs.version}}.tgz
         nx run seed:build:production
         nx run seed:test
         nx run plugin-tester:test
@@ -163,7 +163,7 @@ jobs:
     - name: Building Plugin Rest
       run: |
         npm install
-        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../core/node/dontcode-sandbox-${{inputs.version}}.tgz
+        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugins/dontcode-sandbox-${{inputs.version}}.tgz
         nx run rest:build:production
         nx run rest:test
         nx run plugin-tester:test
@@ -187,7 +187,7 @@ jobs:
     - name: Building IDE Builder
       run: |
         npm install
-        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../core/node/dontcode-rest-${{inputs.version}}.tgz ../core/node/dontcode-basic-${{inputs.version}}.tgz ../core/node/dontcode-fields-${{inputs.version}}.tgz ../core/node/dontcode-screen-${{inputs.version}}.tgz
+        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugin-rest/dontcode-rest-${{inputs.version}}.tgz ../plugins/dontcode-basic-${{inputs.version}}.tgz ../plugins/dontcode-fields-${{inputs.version}}.tgz ../plugins/dontcode-screen-${{inputs.version}}.tgz
         nx run ide-ui:build:production
         nx run ide-ui:test
       working-directory: 'ide-ui'
@@ -208,10 +208,12 @@ jobs:
         name: cypress-videos
         path: ide-ui/dist/cypress/apps/plugin-tester-e2e/videos
     - name: Deploy all plugins
-      run: |
-        nx run plugin-tester:build:production --base-href "https://dont-code.net/plugins/"
-        nx run plugin-tester:build:production --base-href "https://dont-code.net/plugin-rest/"
-        nx run plugin-tester:build:production --base-href "https://dont-code.net/plugin-seed/"
+      run: nx run plugin-tester:build:production --base-href "https://dont-code.net/plugins/"
+      working-directory: 'plugins'
+    - run: nx run plugin-tester:build:production --base-href "https://dont-code.net/plugin-rest/"
+      working-directory: 'plugin-rest'
+    - run:  nx run plugin-tester:build:production --base-href "https://dont-code.net/plugin-seed/"
+      working-directory: 'plugin-seed'
     - if: ${{ success() }}
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
