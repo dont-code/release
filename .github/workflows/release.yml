@@ -28,15 +28,15 @@ jobs:
     - uses: actions/checkout@v3
       with:
         repository: dont-code/plugin-seed
-        path: plugin-ssed
+        path: plugin-seed
         fetch-depth: 0
-        ref: master
+        ref: main
     - uses: actions/checkout@v3
       with:
         repository: dont-code/plugin-rest
         path: plugin-rest
         fetch-depth: 0
-        ref: master
+        ref: main
     - uses: actions/checkout@v3
       with:
         repository: dont-code/preview-ui
