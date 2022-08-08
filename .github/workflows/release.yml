@@ -1,0 +1,84 @@
+  on:
+    workflow_dispatch:
+      inputs:
+        version:
+          description: The version of the release
+          required: true
+          type: string
+  jobs:
+    build:
+      runs-on: ubuntu-latest
+
+      steps:
+      - name: Checkout all repositories
+        uses: actions/checkout@v3
+        with:
+          repository: dont-code/core
+          path: core
+          fetch-depth: 0
+          ref: master
+      - uses: actions/checkout@v3
+        with:
+          repository: dont-code/plugins
+          path: plugins
+          fetch-depth: 0
+          ref: master
+      - uses: actions/checkout@v3
+        with:
+          repository: dont-code/plugin-seed
+          path: plugin-ssed
+          fetch-depth: 0
+          ref: master
+      - uses: actions/checkout@v3
+        with:
+          repository: dont-code/plugin-rest
+          path: plugin-rest
+          fetch-depth: 0
+          ref: master
+      - uses: actions/checkout@v3
+        with:
+          repository: dont-code/preview-ui
+          path: preview-ui
+          fetch-depth: 0
+          ref: master
+      - uses: actions/checkout@v3
+        with:
+          repository: dont-code/ide-ui
+          path: ide-ui
+          fetch-depth: 0
+          ref: master
+      - name: Setup build environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          cache: 'npm'
+      - run: |
+          npm install -g nx
+      - uses: Reedyuk/NPM-Version@1.1.1
+        with:
+          version: ${{inputs.version}}
+          package: 'code/node/packages/core'
+      - name: Building Core
+        run: |
+          npm install
+          nx run core:build:production
+          nx run core:test
+        working-directory: core/node
+      - name: Building Plugins
+        run: |
+          npm install
+          npm install @dontcode/core@$${{inputs.version}}
+          nx run common:build:production
+          nx run common:test
+          nx run sandbox:build:production
+          nx run sandbox:test
+          nx run basic:build:production
+          nx run basic:test
+          nx run fields:build:production
+          nx run fields:test
+          nx run screen:build:production
+          nx run screen:test
+        working-directory: plugins
+
+
+
