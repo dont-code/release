@@ -232,3 +232,55 @@ jobs:
         repository: dont-code/plugin-rest
         branch: gh-pages # The branch the action should deploy to.
         folder: plugin-rest/dist/apps/plugin-tester
+    - name: Building Previewer
+      run: |
+        npm install
+        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugins/dontcode-sandbox-${{inputs.version}}.tgz
+        nx run preview-ui:build:production
+      working-directory: 'preview-ui'
+    - run: |
+        nx run preview-ui-e2e:e2e --browser chromium
+        nx run preview-ui-e2e:e2e --browser chrome
+      working-directory: 'preview-ui'
+    - uses: actions/upload-artifact@v3
+      # Test run screenshots only on failure
+      if: failure()
+      with:
+        name: cypress-screenshots
+        path: preview-ui/dist/cypress/apps/preview-ui-e2e/screenshots
+        # Test run video was always captured, so this action uses "always()" condition
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: cypress-videos
+        path: preview-ui/dist/cypress/apps/preview-ui-e2e/videos
+    - name: Deploy Builder and Previewer
+      run: nx run ide-ui:build:production --base-href "https://dont-code.net/ide-ui/"
+      working-directory: 'ide-ui'
+    - run: nx run preview-ui:build:production --base-href "https://dont-code.net/preview-ui/"
+      working-directory: 'preview-ui'
+    - if: ${{ success() }}
+      uses: JamesIves/github-pages-deploy-action@v4.4.0
+      with:
+        repository: dont-code/ide-ui
+        branch: gh-pages # The branch the action should deploy to.
+        folder: ide-ui/dist/apps/ide-ui
+    - if: ${{ success() }}
+      uses: JamesIves/github-pages-deploy-action@v4.4.0
+      with:
+        repository: dont-code/preview-ui
+        branch: gh-pages # The branch the action should deploy to.
+        folder: preview-ui/dist/apps/preview-ui
+    - name: Publish all libraries
+      if: ${{ success() }}
+      run: | 
+        npm publish core/node/dist/libs/core --access public
+        npm publish plugins/dist/libs/common --access public
+        npm publish plugins/dist/libs/sandbox --access public
+        npm publish plugins/dist/libs/basic --access public
+        npm publish plugins/dist/libs/fields --access public
+        npm publish plugins/dist/libs/screen --access public
+        npm publish plugin-seed/dist/libs/seed --access public
+        npm publish plugin-rest/dist/libs/rest --access public
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
