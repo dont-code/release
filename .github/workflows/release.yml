@@ -59,14 +59,42 @@ jobs:
       with:
         version: ${{inputs.version}}
         package: 'core/node/packages/core'
+    - uses: Reedyuk/NPM-Version@1.1.1
+      with:
+        version: ${{inputs.version}}
+        package: 'plugins/libs/common'
+    - uses: Reedyuk/NPM-Version@1.1.1
+      with:
+        version: ${{inputs.version}}
+        package: 'plugins/libs/sandbox'
+    - uses: Reedyuk/NPM-Version@1.1.1
+      with:
+        version: ${{inputs.version}}
+        package: 'plugins/libs/basic'
+    - uses: Reedyuk/NPM-Version@1.1.1
+      with:
+        version: ${{inputs.version}}
+        package: 'plugins/libs/fields'
+    - uses: Reedyuk/NPM-Version@1.1.1
+      with:
+        version: ${{inputs.version}}
+        package: 'plugins/libs/screen'
+    - uses: Reedyuk/NPM-Version@1.1.1
+      with:
+        version: ${{inputs.version}}
+        package: 'plugin-seed/libs/seed'
+    - uses: Reedyuk/NPM-Version@1.1.1
+      with:
+        version: ${{inputs.version}}
+        package: 'plugin-rest/libs/rest'
     - name: Building Core
       run: |
         npm install
         nx run core:build:production
         nx run core:test
-      working-directory: core/node
+      working-directory: 'core/node'
     - run: npm pack --pack-destination ../../..
-      working-directory: core/node/dist/packages/core
+      working-directory: 'core/node/dist/packages/core'
     - name: Building Plugins
       run: |
         npm install
@@ -81,7 +109,128 @@ jobs:
         nx run fields:test
         nx run screen:build:production
         nx run screen:test
-      working-directory: plugins
-
-
-
+      working-directory: 'plugins'
+    - run: |
+        nx run plugin-tester-e2e:e2e --browser chromium
+        nx run plugin-tester-e2e:e2e --browser chrome
+        nx run plugin-tester-e2e:e2e --browser firefox
+      working-directory: 'plugins'
+    - uses: actions/upload-artifact@v3
+        # Test run screenshots only on failure
+      if: failure()
+      with:
+          name: cypress-screenshots
+          path: plugins/dist/cypress/apps/plugin-tester-e2e/screenshots
+        # Test run video was always captured, so this action uses "always()" condition
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: cypress-videos
+        path: plugins/dist/cypress/apps/plugin-tester-e2e/videos
+    - run: npm pack --pack-destination ../../..
+      working-directory: 'plugins/dist/libs/common'
+    - run: npm pack --pack-destination ../../..
+      working-directory: 'plugins/dist/libs/sandbox'
+    - run: npm pack --pack-destination ../../..
+      working-directory: 'plugins/dist/libs/basic'
+    - run: npm pack --pack-destination ../../..
+      working-directory: 'plugins/dist/libs/fields'
+    - run: npm pack --pack-destination ../../..
+      working-directory: 'plugins/dist/libs/screen'
+    - name: Building Plugin Seed
+      run: |
+        npm install
+        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../core/node/dontcode-sandbox-${{inputs.version}}.tgz
+        nx run seed:build:production
+        nx run seed:test
+        nx run plugin-tester:test
+      working-directory: 'plugin-seed'
+    - run: |
+        nx run plugin-tester-e2e:e2e --browser chromium
+        nx run plugin-tester-e2e:e2e --browser chrome
+        nx run plugin-tester-e2e:e2e --browser firefox
+      working-directory: 'plugin-seed'
+    - uses: actions/upload-artifact@v3
+      # Test run screenshots only on failure
+      if: failure()
+      with:
+        name: cypress-screenshots
+        path: plugin-seed/dist/cypress/apps/plugin-tester-e2e/screenshots
+        # Test run video was always captured, so this action uses "always()" condition
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: cypress-videos
+        path: plugin-seed/dist/cypress/apps/plugin-tester-e2e/videos
+    - name: Building Plugin Rest
+      run: |
+        npm install
+        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../core/node/dontcode-sandbox-${{inputs.version}}.tgz
+        nx run rest:build:production
+        nx run rest:test
+        nx run plugin-tester:test
+      working-directory: 'plugin-rest'
+    - run: |
+        nx run plugin-tester-e2e:e2e --browser chromium
+        nx run plugin-tester-e2e:e2e --browser chrome
+        nx run plugin-tester-e2e:e2e --browser firefox
+      working-directory: 'plugin-rest'
+    - uses: actions/upload-artifact@v3
+      # Test run screenshots only on failure
+      if: failure()
+      with:
+        name: cypress-screenshots
+        path: plugin-rest/dist/cypress/apps/plugin-tester-e2e/screenshots
+        # Test run video was always captured, so this action uses "always()" condition
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: cypress-videos
+        path: plugin-rest/dist/cypress/apps/plugin-tester-e2e/videos
+    - name: Building IDE Builder
+      run: |
+        npm install
+        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../core/node/dontcode-rest-${{inputs.version}}.tgz ../core/node/dontcode-basic-${{inputs.version}}.tgz ../core/node/dontcode-fields-${{inputs.version}}.tgz ../core/node/dontcode-screen-${{inputs.version}}.tgz
+        nx run ide-ui:build:production
+        nx run ide-ui:test
+      working-directory: 'ide-ui'
+    - run: |
+        nx run ide-ui-e2e:e2e --browser chromium
+        nx run ide-ui-e2e:e2e --browser chrome
+        nx run ide-ui-e2e:e2e --browser firefox
+      working-directory: 'ide-ui'
+    - uses: actions/upload-artifact@v3
+      # Test run screenshots only on failure
+      if: failure()
+      with:
+        name: cypress-screenshots
+        path: ide-ui/dist/cypress/apps/plugin-tester-e2e/screenshots
+        # Test run video was always captured, so this action uses "always()" condition
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: cypress-videos
+        path: ide-ui/dist/cypress/apps/plugin-tester-e2e/videos
+    - name: Deploy all plugins
+      run: |
+        nx run plugin-tester:build:production --base-href "https://dont-code.net/plugins/"
+        nx run plugin-tester:build:production --base-href "https://dont-code.net/plugin-rest/"
+        nx run plugin-tester:build:production --base-href "https://dont-code.net/plugin-seed/"
+    - if: ${{ success() }}
+      uses: JamesIves/github-pages-deploy-action@releases/v4.4.0
+      with:
+        repository: dont-code/plugins
+        branch: gh-pages # The branch the action should deploy to.
+        folder: plugins/dist/apps/plugin-tester
+    - if: ${{ success() }}
+      uses: JamesIves/github-pages-deploy-action@releases/v4.4.0
+      with:
+        repository: dont-code/plugin-seed
+        branch: gh-pages # The branch the action should deploy to.
+        folder: plugin-seed/dist/apps/plugin-tester
+    - if: ${{ success() }}
+      uses: JamesIves/github-pages-deploy-action@releases/v4.4.0
+      with:
+        repository: dont-code/plugin-rest
+        branch: gh-pages # The branch the action should deploy to.
+        folder: plugin-rest/dist/apps/plugin-tester
