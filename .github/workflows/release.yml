@@ -68,7 +68,7 @@ jobs:
     - name: Building Plugins
       run: |
         npm install
-        npm install @dontcode/core@$${{inputs.version}}
+        npm install @dontcode/core@${{inputs.version}}
         nx run common:build:production
         nx run common:test
         nx run sandbox:build:production
