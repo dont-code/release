@@ -235,6 +235,8 @@ jobs:
         target_branch: gh-pages # The branch the action should deploy to.
         build_dir: plugins/dist/apps/plugin-tester
         jekyll: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - if: ${{ success() && inputs.branch == 'main'}}
       uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
@@ -242,6 +244,8 @@ jobs:
         target_branch: gh-pages # The branch the action should deploy to.
         build_dir: plugin-seed/dist/apps/plugin-tester
         jekyll: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - if: ${{ success() && inputs.branch == 'main'}}
       uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
@@ -249,6 +253,8 @@ jobs:
         target_branch: gh-pages # The branch the action should deploy to.
         build_dir: plugin-rest/dist/apps/plugin-tester
         jekyll: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Building Previewer
       run: |
         npm install
@@ -285,6 +291,8 @@ jobs:
         target_branch: gh-pages # The branch the action should deploy to.
         build_dir: ide-ui/dist/apps/ide-ui
         jekyll: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - if: ${{ success() && inputs.branch == 'main'}}
       uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
@@ -292,6 +300,8 @@ jobs:
         target_branch: gh-pages # The branch the action should deploy to.
         build_dir: preview-ui/dist/apps/preview-ui
         jekyll: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Publish all libraries
       if: ${{ success() && inputs.branch == 'main'}}
       run: | 
