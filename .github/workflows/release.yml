@@ -235,9 +235,8 @@ jobs:
         branch: gh-pages # The branch the action should deploy to.
         folder: plugins/dist/apps/plugin-tester
         workspace: ${{github.workspace}}/plugins
-      env: {
-             "GITHUB_WORKPLACE"="${{github.workspace}}/plugins"
-      }
+      env:
+        GITHUB_WORKPLACE: ${{github.workspace}}/plugins
     - if: ${{ success() && inputs.branch == 'main'}}
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
@@ -245,9 +244,8 @@ jobs:
         branch: gh-pages # The branch the action should deploy to.
         folder: plugin-seed/dist/apps/plugin-tester
         workspace: ${{github.workspace}}/plugin-seed
-      env: {
-             "GITHUB_WORKPLACE"="${{github.workspace}}/plugin-seed"
-      }
+      env:
+        GITHUB_WORKPLACE: ${{github.workspace}}/plugin-seed
     - if: ${{ success() && inputs.branch == 'main'}}
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
@@ -255,9 +253,8 @@ jobs:
         branch: gh-pages # The branch the action should deploy to.
         folder: plugin-rest/dist/apps/plugin-tester
         workspace: ${{github.workspace}}/plugin-rest
-      env: {
-             "GITHUB_WORKPLACE"="${{github.workspace}}/plugin-rest"
-      }
+      env:
+        GITHUB_WORKPLACE: ${{github.workspace}}/plugin-rest
     - name: Building Previewer
       run: |
         npm install
@@ -294,9 +291,8 @@ jobs:
         branch: gh-pages # The branch the action should deploy to.
         folder: ide-ui/dist/apps/ide-ui
         workspace: ${{github.workspace}}/ide-ui
-      env: {
-             "GITHUB_WORKPLACE"="${{github.workspace}}/ide-ui"
-      }
+      env:
+        GITHUB_WORKPLACE: ${{github.workspace}}/ide-ui
     - if: ${{ success() && inputs.branch == 'main'}}
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
@@ -304,9 +300,8 @@ jobs:
         branch: gh-pages # The branch the action should deploy to.
         folder: preview-ui/dist/apps/preview-ui
         workspace: ${{github.workspace}}/preview-ui
-      env: {
-             "GITHUB_WORKPLACE"="${{github.workspace}}/preview-ui"
-      }
+      env:
+        GITHUB_WORKPLACE: ${{github.workspace}}/preview-ui
     - name: Publish all libraries
       if: ${{ success() && inputs.branch == 'main'}}
       run: | 
