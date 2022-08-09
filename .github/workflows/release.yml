@@ -233,21 +233,21 @@ jobs:
       with:
         repository-name: dont-code/plugins
         branch: gh-pages # The branch the action should deploy to.
-        folder: dist/apps/plugin-tester
+        folder: plugins/dist/apps/plugin-tester
         workspace: ${{github.workspace}}/plugins
     - if: ${{ success() && inputs.branch == 'main'}}
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
         repository-name: dont-code/plugin-seed
         branch: gh-pages # The branch the action should deploy to.
-        folder: dist/apps/plugin-tester
+        folder: plugin-seed/dist/apps/plugin-tester
         workspace: ${{github.workspace}}/plugin-seed
     - if: ${{ success() && inputs.branch == 'main'}}
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
         repository-name: dont-code/plugin-rest
         branch: gh-pages # The branch the action should deploy to.
-        folder: dist/apps/plugin-tester
+        folder: plugin-rest/dist/apps/plugin-tester
         workspace: ${{github.workspace}}/plugin-rest
     - name: Building Previewer
       run: |
@@ -283,14 +283,14 @@ jobs:
       with:
         repository-name: dont-code/ide-ui
         branch: gh-pages # The branch the action should deploy to.
-        folder: dist/apps/ide-ui
+        folder: ide-ui/dist/apps/ide-ui
         workspace: ${{github.workspace}}/ide-ui
     - if: ${{ success() && inputs.branch == 'main'}}
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
         repository-name: dont-code/preview-ui
         branch: gh-pages # The branch the action should deploy to.
-        folder: dist/apps/preview-ui
+        folder: preview-ui/dist/apps/preview-ui
         workspace: ${{github.workspace}}/preview-ui
     - name: Publish all libraries
       if: ${{ success() && inputs.branch == 'main'}}
