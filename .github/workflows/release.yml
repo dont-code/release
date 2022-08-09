@@ -7,6 +7,15 @@ on:
         description: The version of the release
         required: true
         type: string
+      branch:
+        description: The branch to use. Only main is deployed
+        required: false
+        default: Development
+        type: choice
+        options:
+        - Development
+        - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -209,6 +218,11 @@ jobs:
       with:
         name: cypress-videos
         path: ide-ui/dist/cypress/apps/plugin-tester-e2e/videos
+  deployPlugins:
+    if: inputs.branch == 'main'
+    runs-on: Ubuntu-latest
+    needs: build
+    steps:
     - name: Deploy all plugins
       run: nx run plugin-tester:build:production --base-href "https://dont-code.net/plugins/"
       working-directory: 'plugins'
@@ -219,21 +233,28 @@ jobs:
     - if: ${{ success() }}
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
-        repository: dont-code/plugins
+        repository-name: dont-code/plugins
         branch: gh-pages # The branch the action should deploy to.
-        folder: plugins/dist/apps/plugin-tester
+        folder: dist/apps/plugin-tester
+        workspace: ${{github.workspace}}/plugins
     - if: ${{ success() }}
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
-        repository: dont-code/plugin-seed
+        repository-name: dont-code/plugin-seed
         branch: gh-pages # The branch the action should deploy to.
-        folder: plugin-seed/dist/apps/plugin-tester
+        folder: dist/apps/plugin-tester
+        workspace: ${{github.workspace}}/plugin-seed
     - if: ${{ success() }}
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
-        repository: dont-code/plugin-rest
+        repository-name: dont-code/plugin-rest
         branch: gh-pages # The branch the action should deploy to.
-        folder: plugin-rest/dist/apps/plugin-tester
+        folder: dist/apps/plugin-tester
+        workspace: ${{github.workspace}}/plugin-rest
+  buildPreviewer:
+    runs-on: Ubuntu-latest
+    needs: deployPlugins
+    steps:
     - name: Building Previewer
       run: |
         npm install
@@ -256,6 +277,11 @@ jobs:
       with:
         name: cypress-videos
         path: preview-ui/dist/cypress/apps/preview-ui-e2e/videos
+  deployAll:
+    if: inputs.branch == 'main'
+    runs-on: Ubuntu-latest
+    needs: buildPreviewer
+    steps:
     - name: Deploy Builder and Previewer
       run: nx run ide-ui:build:production --base-href "https://dont-code.net/ide-ui/"
       working-directory: 'ide-ui'
@@ -264,15 +290,17 @@ jobs:
     - if: ${{ success() }}
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
-        repository: dont-code/ide-ui
+        repository-name: dont-code/ide-ui
         branch: gh-pages # The branch the action should deploy to.
-        folder: ide-ui/dist/apps/ide-ui
+        folder: dist/apps/ide-ui
+        workspace: ${{github.workspace}}/ide-ui
     - if: ${{ success() }}
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
-        repository: dont-code/preview-ui
+        repository-name: dont-code/preview-ui
         branch: gh-pages # The branch the action should deploy to.
-        folder: preview-ui/dist/apps/preview-ui
+        folder: dist/apps/preview-ui
+        workspace: ${{github.workspace}}/preview-ui
     - name: Publish all libraries
       if: ${{ success() }}
       run: | 
