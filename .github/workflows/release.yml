@@ -218,43 +218,37 @@ jobs:
       with:
         name: cypress-videos
         path: ide-ui/dist/cypress/apps/plugin-tester-e2e/videos
-  deployPlugins:
-    if: inputs.branch == 'main'
-    runs-on: Ubuntu-latest
-    needs: build
-    steps:
     - name: Deploy all plugins
+      if: inputs.branch == 'main'
       run: nx run plugin-tester:build:production --base-href "https://dont-code.net/plugins/"
       working-directory: 'plugins'
     - run: nx run plugin-tester:build:production --base-href "https://dont-code.net/plugin-rest/"
+      if: inputs.branch == 'main'
       working-directory: 'plugin-rest'
     - run:  nx run plugin-tester:build:production --base-href "https://dont-code.net/plugin-seed/"
+      if: inputs.branch == 'main'
       working-directory: 'plugin-seed'
-    - if: ${{ success() }}
+    - if: ${{ success() && inputs.branch == 'main'}}
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
         repository-name: dont-code/plugins
         branch: gh-pages # The branch the action should deploy to.
         folder: dist/apps/plugin-tester
         workspace: ${{github.workspace}}/plugins
-    - if: ${{ success() }}
+    - if: ${{ success() && inputs.branch == 'main'}}
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
         repository-name: dont-code/plugin-seed
         branch: gh-pages # The branch the action should deploy to.
         folder: dist/apps/plugin-tester
         workspace: ${{github.workspace}}/plugin-seed
-    - if: ${{ success() }}
+    - if: ${{ success() && inputs.branch == 'main'}}
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
         repository-name: dont-code/plugin-rest
         branch: gh-pages # The branch the action should deploy to.
         folder: dist/apps/plugin-tester
         workspace: ${{github.workspace}}/plugin-rest
-  buildPreviewer:
-    runs-on: Ubuntu-latest
-    needs: deployPlugins
-    steps:
     - name: Building Previewer
       run: |
         npm install
@@ -277,24 +271,21 @@ jobs:
       with:
         name: cypress-videos
         path: preview-ui/dist/cypress/apps/preview-ui-e2e/videos
-  deployAll:
-    if: inputs.branch == 'main'
-    runs-on: Ubuntu-latest
-    needs: buildPreviewer
-    steps:
     - name: Deploy Builder and Previewer
+      if: inputs.branch == 'main'
       run: nx run ide-ui:build:production --base-href "https://dont-code.net/ide-ui/"
       working-directory: 'ide-ui'
     - run: nx run preview-ui:build:production --base-href "https://dont-code.net/preview-ui/"
+      if: inputs.branch == 'main'
       working-directory: 'preview-ui'
-    - if: ${{ success() }}
+    - if: ${{ success() && inputs.branch == 'main'}}
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
         repository-name: dont-code/ide-ui
         branch: gh-pages # The branch the action should deploy to.
         folder: dist/apps/ide-ui
         workspace: ${{github.workspace}}/ide-ui
-    - if: ${{ success() }}
+    - if: ${{ success() && inputs.branch == 'main'}}
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
         repository-name: dont-code/preview-ui
@@ -302,7 +293,7 @@ jobs:
         folder: dist/apps/preview-ui
         workspace: ${{github.workspace}}/preview-ui
     - name: Publish all libraries
-      if: ${{ success() }}
+      if: ${{ success() && inputs.branch == 'main'}}
       run: | 
         npm publish core/node/dist/libs/core --access public
         npm publish plugins/dist/libs/common --access public
