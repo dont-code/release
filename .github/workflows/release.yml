@@ -184,10 +184,12 @@ jobs:
       with:
         name: cypress-videos
         path: plugin-rest/dist/cypress/apps/plugin-tester-e2e/videos
+    - run: npm pack --pack-destination ../../..
+      working-directory: 'plugin-rest/dist/libs/rest'
     - name: Building IDE Builder
       run: |
         npm install
-        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugin-rest/dontcode-rest-${{inputs.version}}.tgz ../plugins/dontcode-basic-${{inputs.version}}.tgz ../plugins/dontcode-fields-${{inputs.version}}.tgz ../plugins/dontcode-screen-${{inputs.version}}.tgz
+        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugin-rest/dontcode-plugin-rest-${{inputs.version}}.tgz ../plugins/dontcode-plugin-basic-${{inputs.version}}.tgz ../plugins/dontcode-plugin-fields-${{inputs.version}}.tgz ../plugins/dontcode-plugin-screen-${{inputs.version}}.tgz
         nx run ide-ui:build:production
         nx run ide-ui:test
       working-directory: 'ide-ui'
