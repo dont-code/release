@@ -44,7 +44,9 @@ jobs:
         server-password: MAVEN_CENTRAL_TOKEN # env variable for token in deploy
         gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
     - name: Build
-      run: mvn --batch-mode --update-snapshots install
+      run: |
+        cat ~/.m2/settings.xml
+        mvn --batch-mode --update-snapshots install
       working-directory: core/java
       env:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
