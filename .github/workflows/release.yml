@@ -18,13 +18,13 @@ jobs:
         repository: dont-code/core
         path: core
         fetch-depth: 0
-        ref: master
+        ref: main
     - uses: actions/checkout@v3
       with:
         repository: dont-code/plugins
         path: plugins
         fetch-depth: 0
-        ref: master
+        ref: main
     - uses: actions/checkout@v3
       with:
         repository: dont-code/plugin-seed
@@ -42,13 +42,13 @@ jobs:
         repository: dont-code/preview-ui
         path: preview-ui
         fetch-depth: 0
-        ref: master
+        ref: main
     - uses: actions/checkout@v3
       with:
         repository: dont-code/ide-ui
         path: ide-ui
         fetch-depth: 0
-        ref: master
+        ref: main
     - name: Setup build environment
       uses: actions/setup-node@v3
       with:
