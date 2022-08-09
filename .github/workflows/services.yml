@@ -52,7 +52,6 @@ jobs:
         gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
     - name: Build
       run: |
-        cat ~/.m2/settings.xml
         mvn --batch-mode --update-snapshots install
       working-directory: core/java
       env:
@@ -73,6 +72,16 @@ jobs:
         path: ide-services
         fetch-depth: 0
         ref: main
+    - name: Set up JDK 16
+      uses: actions/setup-java@v3
+      with:
+        java-version: '16'
+        distribution: 'adopt'
+        server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
+        server-username: MAVEN_USERNAME # env variable for username in deploy
+        server-password: MAVEN_CENTRAL_TOKEN # env variable for token in deploy
+        gpg-private-key: ${{secrets.MAVEN_GPG_PRIVATE_KEY}}
+        gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
     - name: Build
       run: mvn --batch-mode --update-snapshots install
       working-directory: ide-services
@@ -90,9 +99,19 @@ jobs:
         path: preview-services
         fetch-depth: 0
         ref: main
+    - name: Set up JDK 16
+      uses: actions/setup-java@v3
+      with:
+        java-version: '16'
+        distribution: 'adopt'
+        server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
+        server-username: MAVEN_USERNAME # env variable for username in deploy
+        server-password: MAVEN_CENTRAL_TOKEN # env variable for token in deploy
+        gpg-private-key: ${{secrets.MAVEN_GPG_PRIVATE_KEY}}
+        gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
     - name: Build
       run: mvn --batch-mode --update-snapshots install
-      working-directory: data-services
+      working-directory: preview-services
       env:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
 
@@ -107,6 +126,16 @@ jobs:
         path: data-services
         fetch-depth: 0
         ref: main
+    - name: Set up JDK 16
+      uses: actions/setup-java@v3
+      with:
+        java-version: '16'
+        distribution: 'adopt'
+        server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
+        server-username: MAVEN_USERNAME # env variable for username in deploy
+        server-password: MAVEN_CENTRAL_TOKEN # env variable for token in deploy
+        gpg-private-key: ${{secrets.MAVEN_GPG_PRIVATE_KEY}}
+        gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
     - name: Build
       run: mvn --batch-mode --update-snapshots install
       working-directory: data-services
@@ -124,8 +153,18 @@ jobs:
         path: project-services
         fetch-depth: 0
         ref: main
+    - name: Set up JDK 16
+      uses: actions/setup-java@v3
+      with:
+        java-version: '16'
+        distribution: 'adopt'
+        server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
+        server-username: MAVEN_USERNAME # env variable for username in deploy
+        server-password: MAVEN_CENTRAL_TOKEN # env variable for token in deploy
+        gpg-private-key: ${{secrets.MAVEN_GPG_PRIVATE_KEY}}
+        gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
     - name: Build
       run: mvn --batch-mode --update-snapshots install
-      working-directory: data-services
+      working-directory: project-services
       env:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
