@@ -229,32 +229,26 @@ jobs:
       if: inputs.branch == 'main'
       working-directory: 'plugin-seed'
     - if: ${{ success() && inputs.branch == 'main'}}
-      uses: JamesIves/github-pages-deploy-action@v4.4.0
+      uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
-        repository-name: dont-code/plugins
-        branch: gh-pages # The branch the action should deploy to.
-        folder: plugins/dist/apps/plugin-tester
-        workspace: ${{github.workspace}}/plugins
-      env:
-        GITHUB_WORKPLACE: ${{github.workspace}}/plugins
+        repo: dont-code/plugins
+        target_branch: gh-pages # The branch the action should deploy to.
+        build_dir: plugins/dist/apps/plugin-tester
+        jekyll: false
     - if: ${{ success() && inputs.branch == 'main'}}
-      uses: JamesIves/github-pages-deploy-action@v4.4.0
+      uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
-        repository-name: dont-code/plugin-seed
-        branch: gh-pages # The branch the action should deploy to.
-        folder: plugin-seed/dist/apps/plugin-tester
-        workspace: ${{github.workspace}}/plugin-seed
-      env:
-        GITHUB_WORKPLACE: ${{github.workspace}}/plugin-seed
+        repo: dont-code/plugin-seed
+        target_branch: gh-pages # The branch the action should deploy to.
+        build_dir: plugin-seed/dist/apps/plugin-tester
+        jekyll: false
     - if: ${{ success() && inputs.branch == 'main'}}
-      uses: JamesIves/github-pages-deploy-action@v4.4.0
+      uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
-        repository-name: dont-code/plugin-rest
-        branch: gh-pages # The branch the action should deploy to.
-        folder: plugin-rest/dist/apps/plugin-tester
-        workspace: ${{github.workspace}}/plugin-rest
-      env:
-        GITHUB_WORKPLACE: ${{github.workspace}}/plugin-rest
+        repo: dont-code/plugin-rest
+        target_branch: gh-pages # The branch the action should deploy to.
+        build_dir: plugin-rest/dist/apps/plugin-tester
+        jekyll: false
     - name: Building Previewer
       run: |
         npm install
@@ -285,23 +279,19 @@ jobs:
       if: inputs.branch == 'main'
       working-directory: 'preview-ui'
     - if: ${{ success() && inputs.branch == 'main'}}
-      uses: JamesIves/github-pages-deploy-action@v4.4.0
+      uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
-        repository-name: dont-code/ide-ui
-        branch: gh-pages # The branch the action should deploy to.
-        folder: ide-ui/dist/apps/ide-ui
-        workspace: ${{github.workspace}}/ide-ui
-      env:
-        GITHUB_WORKPLACE: ${{github.workspace}}/ide-ui
+        repo: dont-code/ide-ui
+        target_branch: gh-pages # The branch the action should deploy to.
+        build_dir: ide-ui/dist/apps/ide-ui
+        jekyll: false
     - if: ${{ success() && inputs.branch == 'main'}}
-      uses: JamesIves/github-pages-deploy-action@v4.4.0
+      uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
-        repository-name: dont-code/preview-ui
-        branch: gh-pages # The branch the action should deploy to.
-        folder: preview-ui/dist/apps/preview-ui
-        workspace: ${{github.workspace}}/preview-ui
-      env:
-        GITHUB_WORKPLACE: ${{github.workspace}}/preview-ui
+        repo: dont-code/preview-ui
+        target_branch: gh-pages # The branch the action should deploy to.
+        build_dir: preview-ui/dist/apps/preview-ui
+        jekyll: false
     - name: Publish all libraries
       if: ${{ success() && inputs.branch == 'main'}}
       run: | 
