@@ -28,7 +28,7 @@ jobs:
         path: core
         fetch-depth: 0
         ref: main
-        token: $${{DONTCODE_ACTIONS_TOKEN}}
+        token: $${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - uses: actions/checkout@v3
       with:
         repository: dont-code/plugins
