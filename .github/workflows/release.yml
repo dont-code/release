@@ -311,7 +311,7 @@ jobs:
     - name: Publish all libraries
       if: ${{ success() && inputs.branch == 'main'}}
       run: | 
-        npm publish core/node/dist/libs/core --access public
+        npm publish core/node/dist/packages/core --access public
         npm publish plugins/dist/libs/common --access public
         npm publish plugins/dist/libs/sandbox --access public
         npm publish plugins/dist/libs/basic --access public
