@@ -54,13 +54,13 @@ jobs:
         gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
     - name: Build
       run: |
-        mvn versions:set -DnewVersion=${{inputs.version}}
+        mvn --batch-mode versions:set -DnewVersion=${{inputs.version}}
         mvn --batch-mode --update-snapshots install
       working-directory: core/java
       env:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
     - run: |
-        mvn versions:set -DnewVersion=${{inputs.version}}
+        mvn --batch-mode versions:set -DnewVersion=${{inputs.version}}
         mvn --batch-mode --update-snapshots install -Ddontcode-core.version=${{inputs.version}}
       working-directory: common-quarkus-mongo
       env:
@@ -76,7 +76,7 @@ jobs:
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - name: Build
       run: |
-        mvn versions:set -DnewVersion=${{inputs.version}}
+        mvn --batch-mode versions:set -DnewVersion=${{inputs.version}}
         mvn --batch-mode --update-snapshots install -Ddontcode-common.version=${{inputs.version}}
       working-directory: ide-services
       env:
@@ -92,7 +92,7 @@ jobs:
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - name: Build
       run: |
-        mvn versions:set -DnewVersion=${{inputs.version}}
+        mvn --batch-mode versions:set -DnewVersion=${{inputs.version}}
         mvn --batch-mode --update-snapshots install -Ddontcode-common.version=${{inputs.version}}
       working-directory: preview-services
       env:
@@ -108,7 +108,7 @@ jobs:
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - name: Build
       run: |
-        mvn versions:set -DnewVersion=${{inputs.version}}
+        mvn --batch-mode versions:set -DnewVersion=${{inputs.version}}
         mvn --batch-mode --update-snapshots install -Ddontcode-common.version=${{inputs.version}}
       working-directory: data-services
       env:
@@ -124,7 +124,7 @@ jobs:
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - name: Build
       run: |
-        mvn versions:set -DnewVersion=${{inputs.version}}
+        mvn --batch-mode versions:set -DnewVersion=${{inputs.version}}
         mvn --batch-mode --update-snapshots install -Ddontcode-common.version=${{inputs.version}}
       working-directory: project-services
       env:
