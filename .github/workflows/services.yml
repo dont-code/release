@@ -96,6 +96,7 @@ jobs:
       run: |
         mvn --batch-mode versions:set -DnewVersion=${{inputs.version}}
         mvn --batch-mode versions:update-property -DnewVersion=${{inputs.version}} -Dproperty=dontcode-common.version
+        cat pom.xml
         mvn --batch-mode --update-snapshots install
       working-directory: preview-services
       env:
