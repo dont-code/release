@@ -27,14 +27,14 @@ jobs:
         repository: dont-code/core
         path: core
         fetch-depth: 0
-        ref: main
+        ref: ${{inputs.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - uses: actions/checkout@v3
       with:
         repository: dont-code/common-quarkus-mongo
         path: common-quarkus-mongo
         fetch-depth: 0
-        ref: main
+        ref: ${{inputs.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - name: Create mongo Docker container
       id: build_mongo_docker
@@ -73,7 +73,7 @@ jobs:
         repository: dont-code/ide-services
         path: ide-services
         fetch-depth: 0
-        ref: main
+        ref: ${{inputs.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - name: Create mongo Docker container
       id: build_mongo_docker
@@ -107,7 +107,7 @@ jobs:
         repository: dont-code/preview-services
         path: preview-services
         fetch-depth: 0
-        ref: main
+        ref: ${{inputs.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - name: Create mongo Docker container
       id: build_mongo_docker
@@ -141,7 +141,7 @@ jobs:
         repository: dont-code/data-services
         path: data-services
         fetch-depth: 0
-        ref: main
+        ref: ${{inputs.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - name: Create mongo Docker container
       id: build_mongo_docker
@@ -175,7 +175,7 @@ jobs:
         repository: dont-code/project-services
         path: project-services
         fetch-depth: 0
-        ref: main
+        ref: ${{inputs.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - name: Create mongo Docker container
       id: build_mongo_docker
