@@ -83,6 +83,27 @@ jobs:
       working-directory: ide-services
       env:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
+    - name: Deploy to test
+      if: ${{ success() && inputs.branch == 'main'}}
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.TEST_HOST_NAME }}
+        username: root
+        key: ${{ secrets.TEST_KEY }}
+        passphrase: ${{ secrets.TEST_PASSPHRASE }}
+        source: "ide-services/target/ide-services-runner.jar"
+        target: "/home/dont-code/services"
+        strip_components: 1
+    - name: Restart test
+      if: ${{ success() && inputs.branch == 'main'}}
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.TEST_HOST_NAME }}
+        username: root
+        key: ${{ secrets.TEST_KEY }}
+        passphrase: ${{ secrets.TEST_PASSPHRASE }}
+        script:
+          sudo -u dont-code /home/dont-code/bin/restart-service.sh ide-services
 
     - name: Build Preview-services
       uses: actions/checkout@v3
@@ -96,11 +117,31 @@ jobs:
       run: |
         mvn --batch-mode versions:set -DnewVersion=${{inputs.version}}
         mvn --batch-mode versions:update-property -DnewVersion=${{inputs.version}} -Dproperty=dontcode-common.version
-        cat pom.xml
         mvn --batch-mode --update-snapshots install
       working-directory: preview-services
       env:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
+    - name: Deploy to test
+      if: ${{ success() && inputs.branch == 'main'}}
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.TEST_HOST_NAME }}
+        username: root
+        key: ${{ secrets.TEST_KEY }}
+        passphrase: ${{ secrets.TEST_PASSPHRASE }}
+        source: "preview-services/target/preview-services-runner.jar"
+        target: "/home/dont-code/services"
+        strip_components: 1
+    - name: Restart test
+      if: ${{ success() && inputs.branch == 'main'}}
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.TEST_HOST_NAME }}
+        username: root
+        key: ${{ secrets.TEST_KEY }}
+        passphrase: ${{ secrets.TEST_PASSPHRASE }}
+        script:
+          sudo -u dont-code /home/dont-code/bin/restart-service.sh preview-services
 
     - name: Build Data services
       uses: actions/checkout@v3
@@ -118,8 +159,29 @@ jobs:
       working-directory: data-services
       env:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
+    - name: Deploy to test
+      if: ${{ success() && inputs.branch == 'main'}}
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.TEST_HOST_NAME }}
+        username: root
+        key: ${{ secrets.TEST_KEY }}
+        passphrase: ${{ secrets.TEST_PASSPHRASE }}
+        source: "data-services/target/data-services-runner.jar"
+        target: "/home/dont-code/services"
+        strip_components: 1
+    - name: Restart test
+      if: ${{ success() && inputs.branch == 'main'}}
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.TEST_HOST_NAME }}
+        username: root
+        key: ${{ secrets.TEST_KEY }}
+        passphrase: ${{ secrets.TEST_PASSPHRASE }}
+        script:
+          sudo -u dont-code /home/dont-code/bin/restart-service.sh data-services
 
-    - name: Build Project services
+    - name: Project services
       uses: actions/checkout@v3
       with:
         repository: dont-code/project-services
@@ -134,3 +196,24 @@ jobs:
       working-directory: project-services
       env:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
+    - name: Deploy to test
+      if: ${{ success() && inputs.branch == 'main'}}
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.TEST_HOST_NAME }}
+        username: root
+        key: ${{ secrets.TEST_KEY }}
+        passphrase: ${{ secrets.TEST_PASSPHRASE }}
+        source: "project-services/target/project-services-runner.jar"
+        target: "/home/dont-code/services"
+        strip_components: 1
+    - name: Restart test
+      if: ${{ success() && inputs.branch == 'main'}}
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.TEST_HOST_NAME }}
+        username: root
+        key: ${{ secrets.TEST_KEY }}
+        passphrase: ${{ secrets.TEST_PASSPHRASE }}
+        script:
+           sudo -u dont-code /home/dont-code/bin/restart-service.sh project-services
