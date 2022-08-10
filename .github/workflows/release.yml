@@ -28,36 +28,42 @@ jobs:
         path: core
         fetch-depth: 0
         ref: main
+        token: $${{DONTCODE_ACTIONS_TOKEN}}
     - uses: actions/checkout@v3
       with:
         repository: dont-code/plugins
         path: plugins
         fetch-depth: 0
         ref: main
+        token: $${{DONTCODE_ACTIONS_TOKEN}}
     - uses: actions/checkout@v3
       with:
         repository: dont-code/plugin-seed
         path: plugin-seed
         fetch-depth: 0
         ref: main
+        token: $${{DONTCODE_ACTIONS_TOKEN}}
     - uses: actions/checkout@v3
       with:
         repository: dont-code/plugin-rest
         path: plugin-rest
         fetch-depth: 0
         ref: main
+        token: $${{DONTCODE_ACTIONS_TOKEN}}
     - uses: actions/checkout@v3
       with:
         repository: dont-code/preview-ui
         path: preview-ui
         fetch-depth: 0
         ref: main
+        token: $${{DONTCODE_ACTIONS_TOKEN}}
     - uses: actions/checkout@v3
       with:
         repository: dont-code/ide-ui
         path: ide-ui
         fetch-depth: 0
         ref: main
+        token: $${{DONTCODE_ACTIONS_TOKEN}}
     - name: Setup build environment
       uses: actions/setup-node@v3
       with:
@@ -236,7 +242,7 @@ jobs:
         build_dir: plugins/dist/apps/plugin-tester
         jekyll: false
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
     - if: ${{ success() && inputs.branch == 'main'}}
       uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
@@ -245,7 +251,7 @@ jobs:
         build_dir: plugin-seed/dist/apps/plugin-tester
         jekyll: false
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
     - if: ${{ success() && inputs.branch == 'main'}}
       uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
@@ -254,7 +260,7 @@ jobs:
         build_dir: plugin-rest/dist/apps/plugin-tester
         jekyll: false
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
     - name: Building Previewer
       run: |
         npm install
@@ -292,7 +298,7 @@ jobs:
         build_dir: ide-ui/dist/apps/ide-ui
         jekyll: false
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
     - if: ${{ success() && inputs.branch == 'main'}}
       uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
@@ -301,7 +307,7 @@ jobs:
         build_dir: preview-ui/dist/apps/preview-ui
         jekyll: false
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
     - name: Publish all libraries
       if: ${{ success() && inputs.branch == 'main'}}
       run: | 
