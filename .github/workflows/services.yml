@@ -28,14 +28,14 @@ jobs:
         path: core
         fetch-depth: 0
         ref: main
-        token: $${{DONTCODE_ACTIONS_TOKEN}}
+        token: $${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - uses: actions/checkout@v3
       with:
         repository: dont-code/common-quarkus-mongo
         path: common-quarkus-mongo
         fetch-depth: 0
         ref: main
-        token: $${{DONTCODE_ACTIONS_TOKEN}}
+        token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - name: Create mongo Docker container
       id: build_mongo_docker
       uses: DigiPie/mongo-action@v1.0.1
