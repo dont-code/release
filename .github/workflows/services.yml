@@ -61,7 +61,8 @@ jobs:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
     - run: |
         mvn --batch-mode versions:set -DnewVersion=${{inputs.version}}
-        mvn --batch-mode --update-snapshots install -Ddontcode-core.version=${{inputs.version}}
+        mvn --batch-mode versions:update-property -DnewVersion=${{inputs.version}} -Dproperty=dontcode-core.version
+        mvn --batch-mode --update-snapshots install
       working-directory: common-quarkus-mongo
       env:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
@@ -77,7 +78,8 @@ jobs:
     - name: Build
       run: |
         mvn --batch-mode versions:set -DnewVersion=${{inputs.version}}
-        mvn --batch-mode --update-snapshots install -Ddontcode-common.version=${{inputs.version}}
+        mvn --batch-mode versions:update-property -DnewVersion=${{inputs.version}} -Dproperty=dontcode-common.version
+        mvn --batch-mode --update-snapshots install
       working-directory: ide-services
       env:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
@@ -93,7 +95,8 @@ jobs:
     - name: Build
       run: |
         mvn --batch-mode versions:set -DnewVersion=${{inputs.version}}
-        mvn --batch-mode --update-snapshots install -Ddontcode-common.version=${{inputs.version}}
+        mvn --batch-mode versions:update-property -DnewVersion=${{inputs.version}} -Dproperty=dontcode-common.version
+        mvn --batch-mode --update-snapshots install
       working-directory: preview-services
       env:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
@@ -109,7 +112,8 @@ jobs:
     - name: Build
       run: |
         mvn --batch-mode versions:set -DnewVersion=${{inputs.version}}
-        mvn --batch-mode --update-snapshots install -Ddontcode-common.version=${{inputs.version}}
+        mvn --batch-mode versions:update-property -DnewVersion=${{inputs.version}} -Dproperty=dontcode-common.version
+        mvn --batch-mode --update-snapshots install
       working-directory: data-services
       env:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
@@ -125,7 +129,7 @@ jobs:
     - name: Build
       run: |
         mvn --batch-mode versions:set -DnewVersion=${{inputs.version}}
-        mvn --batch-mode --update-snapshots install -Ddontcode-common.version=${{inputs.version}}
+        mvn --batch-mode --update-snapshots install
       working-directory: project-services
       env:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
