@@ -61,7 +61,7 @@ jobs:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
     - run: |
         mvn versions:set -DnewVersion=${{inputs.version}}
-        mvn --batch-mode --update-snapshots install -Ddontcode-common.version=${{inputs.version}}
+        mvn --batch-mode --update-snapshots install -Ddontcode-core.version=${{inputs.version}}
       working-directory: common-quarkus-mongo
       env:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
