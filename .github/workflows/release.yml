@@ -113,8 +113,9 @@ jobs:
       working-directory: 'core/node/dist/packages/core'
     - name: Building Plugins
       run: |
-        npm install
+#        npm install
         npm install ../core/node/dontcode-core-${{inputs.version}}.tgz
+        npm install
         nx run common:build:production
         nx run common:test
         nx run sandbox:build:production
