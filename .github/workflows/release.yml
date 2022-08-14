@@ -154,7 +154,7 @@ jobs:
       working-directory: 'plugins/dist/libs/screen'
     - name: Building Plugin Seed
       run: |
-        npm install
+        npm install --force
         npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugins/dontcode-sandbox-${{inputs.version}}.tgz
         nx run seed:build:production
         nx run seed:test
