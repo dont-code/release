@@ -158,24 +158,7 @@ jobs:
         npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugins/dontcode-sandbox-${{inputs.version}}.tgz
         nx run seed:build:production
         nx run seed:test
-        nx run plugin-tester:test
       working-directory: 'plugin-seed'
-    - run: |
-        nx run plugin-tester-e2e:e2e --browser chromium
-        nx run plugin-tester-e2e:e2e --browser chrome
-      working-directory: 'plugin-seed'
-    - uses: actions/upload-artifact@v3
-      # Test run screenshots only on failure
-      if: failure()
-      with:
-        name: cypress-screenshots
-        path: plugin-seed/dist/cypress/apps/plugin-tester-e2e/screenshots
-        # Test run video was always captured, so this action uses "always()" condition
-    - uses: actions/upload-artifact@v3
-      if: failure()
-      with:
-        name: cypress-videos
-        path: plugin-seed/dist/cypress/apps/plugin-tester-e2e/videos
     - name: Building Plugin Rest
       run: |
         npm install
