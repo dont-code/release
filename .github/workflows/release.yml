@@ -242,7 +242,7 @@ jobs:
     - name: Building IDE Builder
       run: |
         npm install --force
-        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugin-rest/dontcode-plugin-rest-${{inputs.version}}.tgz ../plugins/dontcode-plugin-basic-${{inputs.version}}.tgz ../plugins/dontcode-plugin-fields-${{inputs.version}}.tgz ../plugins/dontcode-plugin-screen-${{inputs.version}}.tgz
+        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugin-rest/dontcode-plugin-rest-${{inputs.version}}.tgz ../plugin-report/dontcode-plugin-report-${{inputs.version}}.tgz ../plugins/dontcode-plugin-basic-${{inputs.version}}.tgz ../plugins/dontcode-plugin-fields-${{inputs.version}}.tgz ../plugins/dontcode-plugin-screen-${{inputs.version}}.tgz
         nx run ide-ui:build:production
         nx run ide-ui:test
       working-directory: 'ide-ui'
