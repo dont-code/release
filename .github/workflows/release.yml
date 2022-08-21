@@ -216,7 +216,7 @@ jobs:
     - name: Building Plugin Report
       run: |
         npm install --force
-        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugins/dontcode-sandbox-${{inputs.version}}.tgz
+        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugins/dontcode-sandbox-${{inputs.version}}.tgz ../plugins/dontcode-plugin-basic-${{inputs.version}}.tgz
         nx run report:build:production
         nx run report:test
         nx run report-tester:test
