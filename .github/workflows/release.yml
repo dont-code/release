@@ -169,48 +169,48 @@ jobs:
         npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugins/dontcode-sandbox-${{inputs.version}}.tgz
         nx run seed:build:production
         nx run seed:test
-        nx run plugin-tester:test
+        nx run seed-tester:test
       working-directory: 'plugin-seed'
     - run: |
-        nx run plugin-tester-e2e:e2e --browser chromium
-        nx run plugin-tester-e2e:e2e --browser chrome
+        nx run seed-tester-e2e:e2e --browser chromium
+        nx run seed-tester-e2e:e2e --browser chrome
       working-directory: 'plugin-seed'
     - uses: actions/upload-artifact@v3
       # Test run screenshots only on failure
       if: failure()
       with:
         name: cypress-screenshots
-        path: plugin-seed/dist/cypress/apps/plugin-tester-e2e/screenshots
+        path: plugin-seed/dist/cypress/apps/seed-tester-e2e/screenshots
         # Test run video was always captured, so this action uses "always()" condition
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
         name: cypress-videos
-        path: plugin-seed/dist/cypress/apps/plugin-tester-e2e/videos
+        path: plugin-seed/dist/cypress/apps/seed-tester-e2e/videos
     - name: Building Plugin Rest
       run: |
         npm install --force
         npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugins/dontcode-sandbox-${{inputs.version}}.tgz
         nx run rest:build:production
         nx run rest:test
-        nx run plugin-tester:test
+        nx run rest-tester:test
       working-directory: 'plugin-rest'
     - run: |
-        nx run plugin-tester-e2e:e2e --browser chromium
-        nx run plugin-tester-e2e:e2e --browser chrome
+        nx run rest-tester-e2e:e2e --browser chromium
+        nx run rest-tester-e2e:e2e --browser chrome
       working-directory: 'plugin-rest'
     - uses: actions/upload-artifact@v3
       # Test run screenshots only on failure
       if: failure()
       with:
         name: cypress-screenshots
-        path: plugin-rest/dist/cypress/apps/plugin-tester-e2e/screenshots
+        path: plugin-rest/dist/cypress/apps/rest-tester-e2e/screenshots
         # Test run video was always captured, so this action uses "always()" condition
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
         name: cypress-videos
-        path: plugin-rest/dist/cypress/apps/plugin-tester-e2e/videos
+        path: plugin-rest/dist/cypress/apps/rest-tester-e2e/videos
     - run: npm pack --pack-destination ../../..
       working-directory: 'plugin-rest/dist/libs/rest'
     - name: Building Plugin Report
@@ -219,24 +219,24 @@ jobs:
         npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugins/dontcode-sandbox-${{inputs.version}}.tgz
         nx run report:build:production
         nx run report:test
-        nx run plugin-tester:test
+        nx run report-tester:test
       working-directory: 'plugin-report'
     - run: |
-        nx run plugin-tester-e2e:e2e --browser chromium
-        nx run plugin-tester-e2e:e2e --browser chrome
+        nx run report-tester-e2e:e2e --browser chromium
+        nx run report-tester-e2e:e2e --browser chrome
       working-directory: 'plugin-report'
     - uses: actions/upload-artifact@v3
       # Test run screenshots only on failure
       if: failure()
       with:
         name: cypress-screenshots
-        path: plugin-report/dist/cypress/apps/plugin-tester-e2e/screenshots
+        path: plugin-report/dist/cypress/apps/report-tester-e2e/screenshots
         # Test run video was always captured, so this action uses "always()" condition
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
         name: cypress-videos
-        path: plugin-report/dist/cypress/apps/plugin-tester-e2e/videos
+        path: plugin-report/dist/cypress/apps/report-tester-e2e/videos
     - run: npm pack --pack-destination ../../..
       working-directory: 'plugin-report/dist/libs/report'
     - name: Building IDE Builder
@@ -266,13 +266,13 @@ jobs:
       if: inputs.branch == 'main'
       run: nx run plugin-tester:build:production --base-href "https://dont-code.net/plugins/"
       working-directory: 'plugins'
-    - run:  nx run plugin-tester:build:production --base-href "https://dont-code.net/plugin-seed/"
+    - run:  nx run seed-tester:build:production --base-href "https://dont-code.net/plugin-seed/"
       if: inputs.branch == 'main'
       working-directory: 'plugin-seed'
-    - run: nx run plugin-tester:build:production --base-href "https://dont-code.net/plugin-rest/"
+    - run: nx run rest-tester:build:production --base-href "https://dont-code.net/plugin-rest/"
       if: inputs.branch == 'main'
       working-directory: 'plugin-rest'
-    - run:  nx run plugin-tester:build:production --base-href "https://dont-code.net/plugin-report/"
+    - run:  nx run report-tester:build:production --base-href "https://dont-code.net/plugin-report/"
       if: inputs.branch == 'main'
       working-directory: 'plugin-report'
     - if: ${{ success() && inputs.branch == 'main'}}
@@ -289,7 +289,7 @@ jobs:
       with:
         repo: dont-code/plugin-seed
         target_branch: gh-pages # The branch the action should deploy to.
-        build_dir: plugin-seed/dist/apps/plugin-tester
+        build_dir: plugin-seed/dist/apps/seed-tester
         jekyll: false
       env:
         GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
@@ -298,7 +298,7 @@ jobs:
       with:
         repo: dont-code/plugin-rest
         target_branch: gh-pages # The branch the action should deploy to.
-        build_dir: plugin-rest/dist/apps/plugin-tester
+        build_dir: plugin-rest/dist/apps/rest-tester
         jekyll: false
       env:
         GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
@@ -307,7 +307,7 @@ jobs:
       with:
         repo: dont-code/plugin-report
         target_branch: gh-pages # The branch the action should deploy to.
-        build_dir: plugin-report/dist/apps/plugin-tester
+        build_dir: plugin-report/dist/apps/report-tester
         jekyll: false
       env:
         GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
