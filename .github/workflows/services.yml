@@ -102,7 +102,9 @@ jobs:
         username: root
         key: ${{ secrets.TEST_KEY }}
         passphrase: ${{ secrets.TEST_PASSPHRASE }}
-        script:
+        script: |
+          cd /home/dont-code/services
+          chown dont-code:dont-code project-services*
           sudo -u dont-code /home/dont-code/bin/restart-service.sh ide-services
 
     - name: Build Preview-services
@@ -140,7 +142,9 @@ jobs:
         username: root
         key: ${{ secrets.TEST_KEY }}
         passphrase: ${{ secrets.TEST_PASSPHRASE }}
-        script:
+        script: |
+          cd /home/dont-code/services
+          chown dont-code:dont-code preview-services*
           sudo -u dont-code /home/dont-code/bin/restart-service.sh preview-services
 
     - name: Build Data services
@@ -178,7 +182,9 @@ jobs:
         username: root
         key: ${{ secrets.TEST_KEY }}
         passphrase: ${{ secrets.TEST_PASSPHRASE }}
-        script:
+        script: |
+          cd /home/dont-code/services
+          chown dont-code:dont-code data-services*
           sudo -u dont-code /home/dont-code/bin/restart-service.sh data-services
 
     - name: Project services
@@ -215,5 +221,7 @@ jobs:
         username: root
         key: ${{ secrets.TEST_KEY }}
         passphrase: ${{ secrets.TEST_PASSPHRASE }}
-        script:
+        script: |
+           cd /home/dont-code/services
+           chown dont-code:dont-code project-services*
            sudo -u dont-code /home/dont-code/bin/restart-service.sh project-services
