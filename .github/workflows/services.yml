@@ -93,7 +93,7 @@ jobs:
         passphrase: ${{ secrets.TEST_PASSPHRASE }}
         source: "ide-services/target/ide-services-runner.jar"
         target: "/home/dont-code/services"
-        strip_components: 1
+        strip_components: 2
     - name: Restart test
       if: ${{ success() && inputs.branch == 'main'}}
       uses: appleboy/ssh-action@master
@@ -131,7 +131,7 @@ jobs:
         passphrase: ${{ secrets.TEST_PASSPHRASE }}
         source: "preview-services/target/preview-services-runner.jar"
         target: "/home/dont-code/services"
-        strip_components: 1
+        strip_components: 2
     - name: Restart test
       if: ${{ success() && inputs.branch == 'main'}}
       uses: appleboy/ssh-action@master
@@ -169,7 +169,7 @@ jobs:
         passphrase: ${{ secrets.TEST_PASSPHRASE }}
         source: "data-services/target/data-services-runner.jar"
         target: "/home/dont-code/services"
-        strip_components: 1
+        strip_components: 2
     - name: Restart test
       if: ${{ success() && inputs.branch == 'main'}}
       uses: appleboy/ssh-action@master
@@ -206,7 +206,7 @@ jobs:
         passphrase: ${{ secrets.TEST_PASSPHRASE }}
         source: "project-services/target/project-services-runner.jar"
         target: "/home/dont-code/services"
-        strip_components: 1
+        strip_components: 2
     - name: Restart test
       if: ${{ success() && inputs.branch == 'main'}}
       uses: appleboy/ssh-action@master
