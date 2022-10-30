@@ -267,13 +267,13 @@ jobs:
       if: failure()
       with:
         name: cypress-screenshots
-        path: plugin-commerce/dist/cypress/apps/report-tester-e2e/screenshots
+        path: plugin-commerce/dist/cypress/apps/commerce-tester-e2e/screenshots
         # Test run video was always captured, so this action uses "always()" condition
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
         name: cypress-videos
-        path: plugin-commerce/dist/cypress/apps/report-tester-e2e/videos
+        path: plugin-commerce/dist/cypress/apps/commerce-tester-e2e/videos
     - run: npm pack --pack-destination ../../..
       working-directory: 'plugin-commerce/dist/libs/commerce'
     - name: Building IDE Builder
@@ -419,6 +419,6 @@ jobs:
         npm publish plugin-seed/dist/libs/seed --access public
         npm publish plugin-rest/dist/libs/rest --access public
         npm publish plugin-report/dist/libs/report --access public
-        npm publish plugin-commerce/dist/libs/report --access public
+        npm publish plugin-commerce/dist/libs/commerce --access public
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
