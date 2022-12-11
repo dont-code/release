@@ -148,22 +148,6 @@ jobs:
         nx run screen:build:production
         nx run screen:test
       working-directory: 'plugins'
-    - run: |
-        nx run plugin-tester-e2e:e2e --browser chromium
-        nx run plugin-tester-e2e:e2e --browser chrome
-      working-directory: 'plugins'
-    - uses: actions/upload-artifact@v3
-        # Test run screenshots only on failure
-      if: failure()
-      with:
-          name: cypress-screenshots
-          path: plugins/dist/cypress/apps/plugin-tester-e2e/screenshots
-        # Test run video was always captured, so this action uses "always()" condition
-    - uses: actions/upload-artifact@v3
-      if: failure()
-      with:
-        name: cypress-videos
-        path: plugins/dist/cypress/apps/plugin-tester-e2e/videos
     - run: npm pack --pack-destination ../../..
       working-directory: 'plugins/dist/libs/common'
     - run: npm pack --pack-destination ../../..
@@ -182,22 +166,6 @@ jobs:
         nx run seed:test
         nx run seed-tester:test
       working-directory: 'plugin-seed'
-    - run: |
-        nx run seed-tester-e2e:e2e --browser chromium
-        nx run seed-tester-e2e:e2e --browser chrome
-      working-directory: 'plugin-seed'
-    - uses: actions/upload-artifact@v3
-      # Test run screenshots only on failure
-      if: failure()
-      with:
-        name: cypress-screenshots
-        path: plugin-seed/dist/cypress/apps/seed-tester-e2e/screenshots
-        # Test run video was always captured, so this action uses "always()" condition
-    - uses: actions/upload-artifact@v3
-      if: failure()
-      with:
-        name: cypress-videos
-        path: plugin-seed/dist/cypress/apps/seed-tester-e2e/videos
     - name: Building Plugin Rest
       run: |
         npm install --force
@@ -206,24 +174,6 @@ jobs:
         nx run rest:test
         nx run rest-tester:test
       working-directory: 'plugin-rest'
-    - run: |
-        nx run rest-tester-e2e:e2e --browser chromium
-        nx run rest-tester-e2e:e2e --browser chrome
-      working-directory: 'plugin-rest'
-    - uses: actions/upload-artifact@v3
-      # Test run screenshots only on failure
-      if: failure()
-      with:
-        name: cypress-screenshots
-        path: plugin-rest/dist/cypress/apps/rest-tester-e2e/screenshots
-        # Test run video was always captured, so this action uses "always()" condition
-    - uses: actions/upload-artifact@v3
-      if: failure()
-      with:
-        name: cypress-videos
-        path: plugin-rest/dist/cypress/apps/rest-tester-e2e/videos
-    - run: npm pack --pack-destination ../../..
-      working-directory: 'plugin-rest/dist/libs/rest'
     - name: Building Plugin Report
       run: |
         npm install --force
@@ -232,22 +182,6 @@ jobs:
         nx run report:test
         nx run report-tester:test
       working-directory: 'plugin-report'
-    - run: |
-        nx run report-tester-e2e:e2e --browser chromium
-        nx run report-tester-e2e:e2e --browser chrome
-      working-directory: 'plugin-report'
-    - uses: actions/upload-artifact@v3
-      # Test run screenshots only on failure
-      if: failure()
-      with:
-        name: cypress-screenshots
-        path: plugin-report/dist/cypress/apps/report-tester-e2e/screenshots
-        # Test run video was always captured, so this action uses "always()" condition
-    - uses: actions/upload-artifact@v3
-      if: failure()
-      with:
-        name: cypress-videos
-        path: plugin-report/dist/cypress/apps/report-tester-e2e/videos
     - run: npm pack --pack-destination ../../..
       working-directory: 'plugin-report/dist/libs/report'
     - name: Building Plugin Commerce
@@ -258,22 +192,6 @@ jobs:
         nx run commerce:test
         nx run commerce-tester:test
       working-directory: 'plugin-commerce'
-    - run: |
-        nx run commerce-tester-e2e:e2e --browser chromium
-        nx run commerce-tester-e2e:e2e --browser chrome
-      working-directory: 'plugin-commerce'
-    - uses: actions/upload-artifact@v3
-      # Test run screenshots only on failure
-      if: failure()
-      with:
-        name: cypress-screenshots
-        path: plugin-commerce/dist/cypress/apps/commerce-tester-e2e/screenshots
-        # Test run video was always captured, so this action uses "always()" condition
-    - uses: actions/upload-artifact@v3
-      if: failure()
-      with:
-        name: cypress-videos
-        path: plugin-commerce/dist/cypress/apps/commerce-tester-e2e/videos
     - run: npm pack --pack-destination ../../..
       working-directory: 'plugin-commerce/dist/libs/commerce'
     - name: Building IDE Builder
@@ -283,22 +201,6 @@ jobs:
         nx run ide-ui:build:production
         nx run ide-ui:test
       working-directory: 'ide-ui'
-    - run: |
-        nx run ide-ui-e2e:e2e --browser chromium
-        nx run ide-ui-e2e:e2e --browser chrome
-      working-directory: 'ide-ui'
-    - uses: actions/upload-artifact@v3
-      # Test run screenshots only on failure
-      if: failure()
-      with:
-        name: cypress-screenshots
-        path: ide-ui/dist/cypress/apps/plugin-tester-e2e/screenshots
-        # Test run video was always captured, so this action uses "always()" condition
-    - uses: actions/upload-artifact@v3
-      if: failure()
-      with:
-        name: cypress-videos
-        path: ide-ui/dist/cypress/apps/plugin-tester-e2e/videos
     - name: Deploy all plugins
       if: inputs.branch == 'main'
       run: nx run plugin-tester:build:production --base-href "https://dont-code.net/plugins/"
@@ -366,22 +268,6 @@ jobs:
         npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugins/dontcode-sandbox-${{inputs.version}}.tgz
         nx run preview-ui:build:production
       working-directory: 'preview-ui'
-    - run: |
-        nx run preview-ui-e2e:e2e --browser chromium
-        nx run preview-ui-e2e:e2e --browser chrome
-      working-directory: 'preview-ui'
-    - uses: actions/upload-artifact@v3
-      # Test run screenshots only on failure
-      if: failure()
-      with:
-        name: cypress-screenshots
-        path: preview-ui/dist/cypress/apps/preview-ui-e2e/screenshots
-        # Test run video was always captured, so this action uses "always()" condition
-    - uses: actions/upload-artifact@v3
-      if: failure()
-      with:
-        name: cypress-videos
-        path: preview-ui/dist/cypress/apps/preview-ui-e2e/videos
     - name: Deploy Builder and Previewer
       if: inputs.branch == 'main'
       run: nx run ide-ui:build:production --base-href "https://dont-code.net/ide-ui/"
