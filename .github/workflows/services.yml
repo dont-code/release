@@ -148,7 +148,6 @@ jobs:
       uses: softprops/action-gh-release@master
       with:
         name: v${{inputs.version}}
-        tag_name: stable
         files: |
           checksum.txt
           dont-code-release-runners.zip
