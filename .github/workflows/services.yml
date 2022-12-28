@@ -138,7 +138,7 @@ jobs:
       with:
         tag_name: stable
         files: |
-          ide-services/target/idea-services-runner.jar
+          ide-services/target/ide-services-runner.jar
           preview-services/target/preview-services-runner.jar
           data-services/target/data-services-runner.jar
           project-services/target/project-services-runner.jar
