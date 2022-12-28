@@ -136,16 +136,13 @@ jobs:
       if: ${{ success() && inputs.branch == 'main'}}
       uses: vimtor/action-zip@v1
       with:
-        files: |
-          ide-services/target/ide-services-runner.jar
-          preview-services/target/preview-services-runner.jar
-          data-services/target/data-services-runner.jar
-          project-services/target/project-services-runner.jar
+        files: ide-services/target/ide-services-runner.jar preview-services/target/preview-services-runner.jar data-services/target/data-services-runner.jar project-services/target/project-services-runner.jar
         dest: dont-code-release-runners.zip
     - name: Create release
       if: ${{ success() && inputs.branch == 'main'}}
       uses: softprops/action-gh-release@master
       with:
+        name: v${{inputs.version}}
         tag_name: stable
         files: |
           dont-code-release-runners.zip
