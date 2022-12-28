@@ -139,10 +139,16 @@ jobs:
         files: ide-services/target/ide-services-runner.jar preview-services/target/preview-services-runner.jar data-services/target/data-services-runner.jar project-services/target/project-services-runner.jar
         dest: dont-code-release-runners.zip
     - name: Create release
+      uses: jmgilman/actions-generate-checksum@v1
+      with:
+        patterns: |
+          dont-code-release-runners.zip
+    - name: Create release
       if: ${{ success() && inputs.branch == 'main'}}
       uses: softprops/action-gh-release@master
       with:
         name: v${{inputs.version}}
         tag_name: stable
         files: |
+          checksum.txt
           dont-code-release-runners.zip
