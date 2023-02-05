@@ -1,34 +1,18 @@
-name: Complete Dont-code release
+name: Deploy All Live
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: The version of the release
-        required: true
-        type: string
-      branch:
-        description: The branch to use. Only main is deployed
-        required: false
-        default: Development
-        type: choice
-        options:
-        - Development
-        - main
+
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        browser: [chromium, chrome, firefox]
+
     steps:
-    - name: Checkout all repositories
-      uses: actions/checkout@v3
-      with:
-        repository: dont-code/core
-        path: core
-        fetch-depth: 0
-        ref: ${{inputs.branch}}
-        token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - uses: actions/checkout@v3
       with:
         repository: dont-code/plugins
@@ -36,111 +20,17 @@ jobs:
         fetch-depth: 0
         ref: ${{inputs.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
-    - uses: actions/checkout@v3
-      with:
-        repository: dont-code/plugin-seed
-        path: plugin-seed
-        fetch-depth: 0
-        ref: ${{inputs.branch}}
-        token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
-    - uses: actions/checkout@v3
-      with:
-        repository: dont-code/plugin-rest
-        path: plugin-rest
-        fetch-depth: 0
-        ref: ${{inputs.branch}}
-        token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
-    - uses: actions/checkout@v3
-      with:
-        repository: dont-code/plugin-report
-        path: plugin-report
-        fetch-depth: 0
-        ref: ${{inputs.branch}}
-        token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
-    - uses: actions/checkout@v3
-      with:
-        repository: dont-code/plugin-commerce
-        path: plugin-commerce
-        fetch-depth: 0
-        ref: ${{inputs.branch}}
-        token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
-    - uses: actions/checkout@v3
-      with:
-        repository: dont-code/preview-ui
-        path: preview-ui
-        fetch-depth: 0
-        ref: ${{inputs.branch}}
-        token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
-    - uses: actions/checkout@v3
-      with:
-        repository: dont-code/ide-ui
-        path: ide-ui
-        fetch-depth: 0
-        ref: ${{inputs.branch}}
-        token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - name: Setup build environment
       uses: actions/setup-node@v3
       with:
-        node-version: '16.x'
+        node-version: '18.x'
         registry-url: 'https://registry.npmjs.org'
     - run: |
         npm install -g nx
-    - uses: Reedyuk/NPM-Version@1.1.1
-      with:
-        version: ${{inputs.version}}
-        package: 'core/node/packages/core'
-    - uses: Reedyuk/NPM-Version@1.1.1
-      with:
-        version: ${{inputs.version}}
-        package: 'plugins/libs/common'
-    - uses: Reedyuk/NPM-Version@1.1.1
-      with:
-        version: ${{inputs.version}}
-        package: 'plugins/libs/sandbox'
-    - uses: Reedyuk/NPM-Version@1.1.1
-      with:
-        version: ${{inputs.version}}
-        package: 'plugins/libs/basic'
-    - uses: Reedyuk/NPM-Version@1.1.1
-      with:
-        version: ${{inputs.version}}
-        package: 'plugins/libs/fields'
-    - uses: Reedyuk/NPM-Version@1.1.1
-      with:
-        version: ${{inputs.version}}
-        package: 'plugins/libs/screen'
-    - uses: Reedyuk/NPM-Version@1.1.1
-      with:
-        version: ${{inputs.version}}
-        package: 'plugin-seed/libs/seed'
-    - uses: Reedyuk/NPM-Version@1.1.1
-      with:
-        version: ${{inputs.version}}
-        package: 'plugin-rest/libs/rest'
-    - uses: Reedyuk/NPM-Version@1.1.1
-      with:
-        version: ${{inputs.version}}
-        package: 'plugin-report/libs/report'
-    - uses: Reedyuk/NPM-Version@1.1.1
-      with:
-        version: ${{inputs.version}}
-        package: 'plugin-commerce/libs/commerce'
-    - name: Building Core
-      run: |
-        npm install
-        nx run core:build:production
-        nx run core:test
-      working-directory: 'core/node'
-    - run: npm pack --pack-destination ../../..
-      working-directory: 'core/node/dist/packages/core'
     - name: Building Plugins
       run: |
         npm install --force
-        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz
-        nx run common:build:production
-        nx run common:test
-        nx run sandbox:build:production
-        nx run sandbox:test
+        npm install @dontcode/core@latest --no-optional
         nx run basic:build:production
         nx run basic:test
         nx run fields:build:production
@@ -149,42 +39,40 @@ jobs:
         nx run screen:test
       working-directory: 'plugins'
     - run: |
-        nx run plugin-tester-e2e:e2e --browser chromium
-        nx run plugin-tester-e2e:e2e --browser chrome
+        nx run plugin-tester-e2e:e2e --browser ${{matrix.browser}}
       working-directory: 'plugins'
     - uses: actions/upload-artifact@v3
-        # Test run screenshots only on failure
+      # Test run screenshots only on failure
       if: failure()
       with:
-          name: cypress-screenshots
-          path: plugins/dist/cypress/apps/plugin-tester-e2e/screenshots
+        name: cypress-screenshots
+        path: plugins/dist/cypress/apps/plugin-tester-e2e/screenshots
         # Test run video was always captured, so this action uses "always()" condition
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
         name: cypress-videos
         path: plugins/dist/cypress/apps/plugin-tester-e2e/videos
-    - run: npm pack --pack-destination ../../..
-      working-directory: 'plugins/dist/libs/common'
-    - run: npm pack --pack-destination ../../..
-      working-directory: 'plugins/dist/libs/sandbox'
-    - run: npm pack --pack-destination ../../..
-      working-directory: 'plugins/dist/libs/basic'
-    - run: npm pack --pack-destination ../../..
-      working-directory: 'plugins/dist/libs/fields'
-    - run: npm pack --pack-destination ../../..
-      working-directory: 'plugins/dist/libs/screen'
+    - name: Prepare Plugins deployment
+      run: nx run plugin-tester:build:production --base-href "https://dont-code.net/plugins/"
+      working-directory: 'plugins'
     - name: Building Plugin Seed
-      run: |
+      uses: actions/checkout@v3
+      with:
+        repository: dont-code/plugin-seed
+        path: plugin-seed
+        fetch-depth: 0
+        ref: ${{inputs.branch}}
+        token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
+    - run: |
         npm install --force
-        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugins/dontcode-sandbox-${{inputs.version}}.tgz
+        npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest
         nx run seed:build:production
         nx run seed:test
         nx run seed-tester:test
       working-directory: 'plugin-seed'
     - run: |
-        nx run seed-tester-e2e:e2e --browser chromium
-        nx run seed-tester-e2e:e2e --browser chrome
+        nx run seed-tester-e2e:e2e --browser ${{matrix.browser}}
       working-directory: 'plugin-seed'
     - uses: actions/upload-artifact@v3
       # Test run screenshots only on failure
@@ -198,17 +86,28 @@ jobs:
       with:
         name: cypress-videos
         path: plugin-seed/dist/cypress/apps/seed-tester-e2e/videos
+    - name: Prepare Plugin Seed Deployment
+      run:  nx run seed-tester:build:production --base-href "https://dont-code.net/plugin-seed/"
+      working-directory: 'plugin-seed'
+
     - name: Building Plugin Rest
-      run: |
+      uses: actions/checkout@v3
+      with:
+        repository: dont-code/plugin-rest
+        path: plugin-rest
+        fetch-depth: 0
+        ref: ${{inputs.branch}}
+        token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
+
+    - run: |
         npm install --force
-        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugins/dontcode-sandbox-${{inputs.version}}.tgz
+        npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest
         nx run rest:build:production
         nx run rest:test
         nx run rest-tester:test
       working-directory: 'plugin-rest'
     - run: |
-        nx run rest-tester-e2e:e2e --browser chromium
-        nx run rest-tester-e2e:e2e --browser chrome
+        nx run rest-tester-e2e:e2e --browser ${{matrix.browser}}
       working-directory: 'plugin-rest'
     - uses: actions/upload-artifact@v3
       # Test run screenshots only on failure
@@ -222,8 +121,10 @@ jobs:
       with:
         name: cypress-videos
         path: plugin-rest/dist/cypress/apps/rest-tester-e2e/videos
-    - run: npm pack --pack-destination ../../..
-      working-directory: 'plugin-rest/dist/libs/rest'
+    - name: Prepare Plugin Rest deployment
+      run: nx run rest-tester:build:production --base-href "https://dont-code.net/plugin-rest/"
+      working-directory: 'plugin-rest'
+
     - name: Building Plugin Report
       run: |
         npm install --force
@@ -248,19 +149,57 @@ jobs:
       with:
         name: cypress-videos
         path: plugin-report/dist/cypress/apps/report-tester-e2e/videos
-    - run: npm pack --pack-destination ../../..
-      working-directory: 'plugin-report/dist/libs/report'
-    - name: Building Plugin Commerce
-      run: |
+
+    - name: Building Plugin Report
+      uses: actions/checkout@v3
+      with:
+        repository: dont-code/plugin-report
+        path: plugin-report
+        fetch-depth: 0
+        ref: ${{inputs.branch}}
+        token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
+    - run: |
         npm install --force
-        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugins/dontcode-sandbox-${{inputs.version}}.tgz ../plugins/dontcode-plugin-basic-${{inputs.version}}.tgz ../plugins/dontcode-plugin-fields-${{inputs.version}}.tgz
+        npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest @dontcode/plugin-basic@latest @dontcode/plugin-fields@latest        nx run report:build:production
+        nx run report:test
+        nx run report-tester:test
+      working-directory: 'plugin-report'
+    - run: |
+        nx run report-tester-e2e:e2e --browser ${{matrix.browser}}
+      working-directory: 'plugin-report'
+    - uses: actions/upload-artifact@v3
+      # Test run screenshots only on failure
+      if: failure()
+      with:
+        name: cypress-screenshots
+        path: plugin-report/dist/cypress/apps/report-tester-e2e/screenshots
+        # Test run video was always captured, so this action uses "always()" condition
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: cypress-videos
+        path: plugin-report/dist/cypress/apps/report-tester-e2e/videos
+    - name: Prepare Plugin Report Deployment
+      run:  nx run report-tester:build:production --base-href "https://dont-code.net/plugin-report/"
+      working-directory: 'plugin-report'
+
+    - name: Building Plugin Commerce
+      uses: actions/checkout@v3
+      with:
+        repository: dont-code/plugin-commerce
+        path: plugin-commerce
+        fetch-depth: 0
+        ref: ${{inputs.branch}}
+        token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
+    - run: |
+        npm install --force
+        npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest @dontcode/plugin-basic@latest @dontcode/plugin-fields@latest
         nx run commerce:build:production
         nx run commerce:test
         nx run commerce-tester:test
       working-directory: 'plugin-commerce'
     - run: |
-        nx run commerce-tester-e2e:e2e --browser chromium
-        nx run commerce-tester-e2e:e2e --browser chrome
+        nx run commerce-tester-e2e:e2e --browser ${{matrix.browser}}
       working-directory: 'plugin-commerce'
     - uses: actions/upload-artifact@v3
       # Test run screenshots only on failure
@@ -274,101 +213,58 @@ jobs:
       with:
         name: cypress-videos
         path: plugin-commerce/dist/cypress/apps/commerce-tester-e2e/videos
-    - run: npm pack --pack-destination ../../..
-      working-directory: 'plugin-commerce/dist/libs/commerce'
+    - name: Prepare Plugin Commerce deployment
+      run:  nx run commerce-tester:build:production --base-href "https://dont-code.net/plugin-commerce/"
+      working-directory: 'plugin-commerce'
+
     - name: Building IDE Builder
-      run: |
+      uses: actions/checkout@v3
+      with:
+        repository: dont-code/ide-ui
+        path: ide-ui
+        fetch-depth: 0
+        ref: ${{inputs.branch}}
+        token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
+    - run: |
         npm install --force
-        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugin-rest/dontcode-plugin-rest-${{inputs.version}}.tgz ../plugin-report/dontcode-plugin-report-${{inputs.version}}.tgz ../plugins/dontcode-plugin-basic-${{inputs.version}}.tgz ../plugins/dontcode-plugin-fields-${{inputs.version}}.tgz ../plugins/dontcode-plugin-screen-${{inputs.version}}.tgz
+        npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest @dontcode/plugin-basic@latest @dontcode/plugin-fields@latest @dontcode/plugin-screen@latest @dontcode/plugin-rest@latest @dontcode/plugin-report@latest @dontcode/plugin-commerce@latest
         nx run ide-ui:build:production
         nx run ide-ui:test
       working-directory: 'ide-ui'
     - run: |
-        nx run ide-ui-e2e:e2e --browser chromium
-        nx run ide-ui-e2e:e2e --browser chrome
+        nx run ide-ui-e2e:e2e --browser ${{matrix.browser}}
       working-directory: 'ide-ui'
     - uses: actions/upload-artifact@v3
       # Test run screenshots only on failure
       if: failure()
       with:
         name: cypress-screenshots
-        path: ide-ui/dist/cypress/apps/plugin-tester-e2e/screenshots
+        path: ide-ui/dist/cypress/apps/ide-ui-e2e/screenshots
         # Test run video was always captured, so this action uses "always()" condition
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
         name: cypress-videos
-        path: ide-ui/dist/cypress/apps/plugin-tester-e2e/videos
-    - name: Deploy all plugins
-      if: inputs.branch == 'main'
-      run: nx run plugin-tester:build:production --base-href "https://dont-code.net/plugins/"
-      working-directory: 'plugins'
-    - run:  nx run seed-tester:build:production --base-href "https://dont-code.net/plugin-seed/"
-      if: inputs.branch == 'main'
-      working-directory: 'plugin-seed'
-    - run: nx run rest-tester:build:production --base-href "https://dont-code.net/plugin-rest/"
-      if: inputs.branch == 'main'
-      working-directory: 'plugin-rest'
-    - run:  nx run report-tester:build:production --base-href "https://dont-code.net/plugin-report/"
-      if: inputs.branch == 'main'
-      working-directory: 'plugin-report'
-    - run:  nx run commerce-tester:build:production --base-href "https://dont-code.net/plugin-commerce/"
-      if: inputs.branch == 'main'
-      working-directory: 'plugin-commerce'
-    - if: ${{ success() && inputs.branch == 'main'}}
-      uses: crazy-max/ghaction-github-pages@v3.0.0
-      with:
-        repo: dont-code/plugins
-        target_branch: gh-pages # The branch the action should deploy to.
-        build_dir: plugins/dist/apps/plugin-tester
-        jekyll: false
-      env:
-        GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
-    - if: ${{ success() && inputs.branch == 'main'}}
-      uses: crazy-max/ghaction-github-pages@v3.0.0
-      with:
-        repo: dont-code/plugin-seed
-        target_branch: gh-pages # The branch the action should deploy to.
-        build_dir: plugin-seed/dist/apps/seed-tester
-        jekyll: false
-      env:
-        GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
-    - if: ${{ success() && inputs.branch == 'main'}}
-      uses: crazy-max/ghaction-github-pages@v3.0.0
-      with:
-        repo: dont-code/plugin-rest
-        target_branch: gh-pages # The branch the action should deploy to.
-        build_dir: plugin-rest/dist/apps/rest-tester
-        jekyll: false
-      env:
-        GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
-    - if: ${{ success() && inputs.branch == 'main'}}
-      uses: crazy-max/ghaction-github-pages@v3.0.0
-      with:
-        repo: dont-code/plugin-report
-        target_branch: gh-pages # The branch the action should deploy to.
-        build_dir: plugin-report/dist/apps/report-tester
-        jekyll: false
-      env:
-        GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
-    - if: ${{ success() && inputs.branch == 'main'}}
-      uses: crazy-max/ghaction-github-pages@v3.0.0
-      with:
-        repo: dont-code/plugin-commerce
-        target_branch: gh-pages # The branch the action should deploy to.
-        build_dir: plugin-commerce/dist/apps/commerce-tester
-        jekyll: false
-      env:
-        GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
+        path: ide-ui/dist/cypress/apps/ide-ui-e2e/videos
+    - name: Prepare IDE Builder deployment
+      run: nx run ide-ui:build:production --base-href "https://dont-code.net/ide-ui/"
+      working-directory: 'ide-ui'
+
     - name: Building Previewer
-      run: |
+      uses: actions/checkout@v3
+      with:
+        repository: dont-code/preview-ui
+        path: preview-ui
+        fetch-depth: 0
+        ref: ${{inputs.branch}}
+        token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
+    - run: |
         npm install --force
-        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugins/dontcode-sandbox-${{inputs.version}}.tgz
+        npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest
         nx run preview-ui:build:production
       working-directory: 'preview-ui'
     - run: |
-        nx run preview-ui-e2e:e2e --browser chromium
-        nx run preview-ui-e2e:e2e --browser chrome
+        nx run preview-ui-e2e:e2e --browser ${{matrix.browser}}
       working-directory: 'preview-ui'
     - uses: actions/upload-artifact@v3
       # Test run screenshots only on failure
@@ -382,14 +278,57 @@ jobs:
       with:
         name: cypress-videos
         path: preview-ui/dist/cypress/apps/preview-ui-e2e/videos
-    - name: Deploy Builder and Previewer
-      if: inputs.branch == 'main'
-      run: nx run ide-ui:build:production --base-href "https://dont-code.net/ide-ui/"
-      working-directory: 'ide-ui'
-    - run: nx run preview-ui:build:production --base-href "https://dont-code.net/preview-ui/"
-      if: inputs.branch == 'main'
+    - name: Prepare Previewer deployment
+      run: nx run preview-ui:build:production --base-href "https://dont-code.net/preview-ui/"
       working-directory: 'preview-ui'
-    - if: ${{ success() && inputs.branch == 'main'}}
+
+    - name: Deploy everything to Live
+      if: ${{ success() }}
+      uses: crazy-max/ghaction-github-pages@v3.0.0
+      with:
+        repo: dont-code/plugins
+        target_branch: gh-pages # The branch the action should deploy to.
+        build_dir: plugins/dist/apps/plugin-tester
+        jekyll: false
+      env:
+        GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
+    - if: ${{ success() }}
+      uses: crazy-max/ghaction-github-pages@v3.0.0
+      with:
+        repo: dont-code/plugin-seed
+        target_branch: gh-pages # The branch the action should deploy to.
+        build_dir: plugin-seed/dist/apps/seed-tester
+        jekyll: false
+      env:
+        GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
+    - if: ${{ success() }}
+      uses: crazy-max/ghaction-github-pages@v3.0.0
+      with:
+        repo: dont-code/plugin-rest
+        target_branch: gh-pages # The branch the action should deploy to.
+        build_dir: plugin-rest/dist/apps/rest-tester
+        jekyll: false
+      env:
+        GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
+    - if: ${{ success() }}
+      uses: crazy-max/ghaction-github-pages@v3.0.0
+      with:
+        repo: dont-code/plugin-report
+        target_branch: gh-pages # The branch the action should deploy to.
+        build_dir: plugin-report/dist/apps/report-tester
+        jekyll: false
+      env:
+        GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
+    - if: ${{ success() }}
+      uses: crazy-max/ghaction-github-pages@v3.0.0
+      with:
+        repo: dont-code/plugin-commerce
+        target_branch: gh-pages # The branch the action should deploy to.
+        build_dir: plugin-commerce/dist/apps/commerce-tester
+        jekyll: false
+      env:
+        GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
+    - if: ${{ success() }}
       uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
         repo: dont-code/ide-ui
@@ -398,7 +337,7 @@ jobs:
         jekyll: false
       env:
         GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
-    - if: ${{ success() && inputs.branch == 'main'}}
+    - if: ${{ success() }}
       uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
         repo: dont-code/preview-ui
@@ -407,18 +346,3 @@ jobs:
         jekyll: false
       env:
         GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
-    - name: Publish all libraries
-      if: ${{ success() && inputs.branch == 'main'}}
-      run: | 
-        npm publish core/node/dist/packages/core --access public
-        npm publish plugins/dist/libs/common --access public
-        npm publish plugins/dist/libs/sandbox --access public
-        npm publish plugins/dist/libs/basic --access public
-        npm publish plugins/dist/libs/fields --access public
-        npm publish plugins/dist/libs/screen --access public
-        npm publish plugin-seed/dist/libs/seed --access public
-        npm publish plugin-rest/dist/libs/rest --access public
-        npm publish plugin-report/dist/libs/report --access public
-        npm publish plugin-commerce/dist/libs/commerce --access public
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
