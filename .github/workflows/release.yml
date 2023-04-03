@@ -126,31 +126,6 @@ jobs:
       working-directory: 'plugin-rest'
 
     - name: Building Plugin Report
-      run: |
-        npm install --force
-        npm install ../core/node/dontcode-core-${{inputs.version}}.tgz ../plugins/dontcode-plugin-common-${{inputs.version}}.tgz ../plugins/dontcode-sandbox-${{inputs.version}}.tgz ../plugins/dontcode-plugin-basic-${{inputs.version}}.tgz ../plugins/dontcode-plugin-fields-${{inputs.version}}.tgz
-        nx run report:build:production
-        nx run report:test
-        nx run report-tester:test
-      working-directory: 'plugin-report'
-    - run: |
-        nx run report-tester-e2e:e2e --browser chromium
-        nx run report-tester-e2e:e2e --browser chrome
-      working-directory: 'plugin-report'
-    - uses: actions/upload-artifact@v3
-      # Test run screenshots only on failure
-      if: failure()
-      with:
-        name: cypress-screenshots
-        path: plugin-report/dist/cypress/apps/report-tester-e2e/screenshots
-        # Test run video was always captured, so this action uses "always()" condition
-    - uses: actions/upload-artifact@v3
-      if: failure()
-      with:
-        name: cypress-videos
-        path: plugin-report/dist/cypress/apps/report-tester-e2e/videos
-
-    - name: Building Plugin Report
       uses: actions/checkout@v3
       with:
         repository: dont-code/plugin-report
