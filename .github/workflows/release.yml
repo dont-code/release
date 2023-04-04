@@ -135,7 +135,8 @@ jobs:
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
         npm install --force
-        npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest @dontcode/plugin-basic@latest @dontcode/plugin-fields@latest        nx run report:build:production
+        npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest @dontcode/plugin-basic@latest @dontcode/plugin-fields@latest
+        nx run report:build:production
         nx run report:test
         nx run report-tester:test
       working-directory: 'plugin-report'
