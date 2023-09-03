@@ -2,10 +2,27 @@ name: Deploy All Live
 
 on:
   workflow_dispatch:
-
+    inputs:
+      version:
+        description: The version of the release
+        required: true
+        type: string
+      next:
+        description: Is it a dev / next release ?
+        required: true
+        type: boolean
+      deploy:
+        description: Deploy to public website?
+        required: true
+        type: boolean
 
 jobs:
   build:
+    env:
+      branch: ${{ inputs.next == true && 'Development' || 'main' }}
+      stage: ${{ inputs.next == true && 'next' || 'latest' }}
+      version: ${{ inputs.next == true && 'patch' || 'minor' }}
+
     runs-on: ubuntu-latest
 
     strategy:
@@ -18,7 +35,7 @@ jobs:
         repository: dont-code/plugins
         path: plugins
         fetch-depth: 0
-        ref: ${{inputs.branch}}
+        ref: ${{env.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - name: Setup build environment
       uses: actions/setup-node@v3
@@ -27,10 +44,10 @@ jobs:
         registry-url: 'https://registry.npmjs.org'
     - run: |
         npm install -g nx
-    - name: Building Plugins
+    - name: Building Plugins ${{env.stage}}
       run: |
         npm install --force
-        npm install @dontcode/core@latest --no-optional
+        npm install @dontcode/core@${{env.stage}} --no-optional
         nx run basic:build:production
         nx run basic:test
         nx run fields:build:production
@@ -56,17 +73,17 @@ jobs:
     - name: Prepare Plugins deployment
       run: nx run plugin-tester:build:production --base-href "https://dont-code.net/plugins/"
       working-directory: 'plugins'
-    - name: Building Plugin Seed
+    - name: Building Plugin Seed ${{env.branch}}
       uses: actions/checkout@v3
       with:
         repository: dont-code/plugin-seed
         path: plugin-seed
         fetch-depth: 0
-        ref: ${{inputs.branch}}
+        ref: ${{env.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
         npm install --force
-        npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest
+        npm install @dontcode/core@${{env.stage}} @dontcode/plugin-common@${{env.stage}} @dontcode/sandbox@${{env.stage}}
         nx run seed:build:production
         nx run seed:test
         nx run seed-tester:test
@@ -90,18 +107,18 @@ jobs:
       run:  nx run seed-tester:build:production --base-href "https://dont-code.net/plugin-seed/"
       working-directory: 'plugin-seed'
 
-    - name: Building Plugin Rest
+    - name: Building Plugin Rest ${{env.branch}}
       uses: actions/checkout@v3
       with:
         repository: dont-code/plugin-rest
         path: plugin-rest
         fetch-depth: 0
-        ref: ${{inputs.branch}}
+        ref: ${{env.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
 
     - run: |
         npm install --force
-        npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest
+        npm install @dontcode/core@${{env.stage}} @dontcode/plugin-common@{{env.stage}} @dontcode/sandbox@{{env.stage}}
         nx run rest:build:production
         nx run rest:test
         nx run rest-tester:test
@@ -125,17 +142,17 @@ jobs:
       run: nx run rest-tester:build:production --base-href "https://dont-code.net/plugin-rest/"
       working-directory: 'plugin-rest'
 
-    - name: Building Plugin Report
+    - name: Building Plugin Report {{env.branch}}
       uses: actions/checkout@v3
       with:
         repository: dont-code/plugin-report
         path: plugin-report
         fetch-depth: 0
-        ref: ${{inputs.branch}}
+        ref: ${{event.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
         npm install --force
-        npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest @dontcode/plugin-basic@latest @dontcode/plugin-fields@latest
+        npm install @dontcode/core@{{env.stage}} @dontcode/plugin-common@{{env.stage}} @dontcode/sandbox@{{env.stage}} @dontcode/plugin-basic@{{env.stage}} @dontcode/plugin-fields@{{env.stage}}
         nx run report:build:production
         nx run report:test
         nx run report-tester:test
@@ -159,17 +176,17 @@ jobs:
       run:  nx run report-tester:build:production --base-href "https://dont-code.net/plugin-report/"
       working-directory: 'plugin-report'
 
-    - name: Building Plugin Commerce
+    - name: Building Plugin Commerce {{env.branch}}
       uses: actions/checkout@v3
       with:
         repository: dont-code/plugin-commerce
         path: plugin-commerce
         fetch-depth: 0
-        ref: ${{inputs.branch}}
+        ref: ${{event.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
         npm install --force
-        npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest @dontcode/plugin-basic@latest @dontcode/plugin-fields@latest
+        npm install @dontcode/core@{{env.stage}} @dontcode/plugin-common@{{env.stage}} @dontcode/sandbox@{{env.stage}} @dontcode/plugin-basic@{{env.stage}} @dontcode/plugin-fields@{{env.stage}}
         nx run commerce:build:production
         nx run commerce:test
         nx run commerce-tester:test
@@ -193,17 +210,17 @@ jobs:
       run:  nx run commerce-tester:build:production --base-href "https://dont-code.net/plugin-commerce/"
       working-directory: 'plugin-commerce'
 
-    - name: Building IDE Builder
+    - name: Building IDE Builder {{env.branch}}
       uses: actions/checkout@v3
       with:
         repository: dont-code/ide-ui
         path: ide-ui
         fetch-depth: 0
-        ref: ${{inputs.branch}}
+        ref: ${{event.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
         npm install --force
-        npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest @dontcode/plugin-basic@latest @dontcode/plugin-fields@latest @dontcode/plugin-screen@latest @dontcode/plugin-rest@latest @dontcode/plugin-report@latest @dontcode/plugin-commerce@latest
+        npm install @dontcode/core@{{env.stage}} @dontcode/plugin-common@{{env.stage}} @dontcode/sandbox@{{env.stage}} @dontcode/plugin-basic@{{env.stage}} @dontcode/plugin-fields@{{env.stage}} @dontcode/plugin-screen@{{env.stage}} @dontcode/plugin-rest@{{env.stage}} @dontcode/plugin-report@{{env.stage}} @dontcode/plugin-commerce@{{env.stage}}
         nx run ide-ui:build:production
         nx run ide-ui:test
       working-directory: 'ide-ui'
@@ -222,7 +239,7 @@ jobs:
       with:
         name: cypress-videos
         path: ide-ui/dist/cypress/apps/ide-ui-e2e/videos
-    - name: Prepare IDE Builder deployment
+    - name: Prepare IDE Builder deployment {{env.branch}}
       run: nx run ide-ui:build:production --base-href "https://dont-code.net/ide-ui/"
       working-directory: 'ide-ui'
 
@@ -232,11 +249,11 @@ jobs:
         repository: dont-code/preview-ui
         path: preview-ui
         fetch-depth: 0
-        ref: ${{inputs.branch}}
+        ref: ${{event.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
         npm install --force
-        npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest
+        npm install @dontcode/core@{{env.stage}} @dontcode/plugin-common@{{env.stage}} @dontcode/sandbox@{{env.stage}}
         nx run preview-ui:build:production
       working-directory: 'preview-ui'
     - run: |
@@ -258,8 +275,8 @@ jobs:
       run: nx run preview-ui:build:production --base-href "https://dont-code.net/preview-ui/"
       working-directory: 'preview-ui'
 
-    - name: Deploy everything to Live
-      if: ${{ success() }}
+    - name: Deploy everything to {{env.stage}}
+      if: ${{ success() && ( inputs.deploy == true ) }}
       uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
         repo: dont-code/plugins
@@ -268,7 +285,7 @@ jobs:
         jekyll: false
       env:
         GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
-    - if: ${{ success() }}
+    - if: ${{ success() && ( inputs.deploy == true ) }}
       uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
         repo: dont-code/plugin-seed
@@ -277,7 +294,7 @@ jobs:
         jekyll: false
       env:
         GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
-    - if: ${{ success() }}
+    - if: ${{ success() && ( inputs.deploy == true ) }}
       uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
         repo: dont-code/plugin-rest
@@ -286,7 +303,7 @@ jobs:
         jekyll: false
       env:
         GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
-    - if: ${{ success() }}
+    - if: ${{ success() && ( inputs.deploy == true ) }}
       uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
         repo: dont-code/plugin-report
@@ -295,7 +312,7 @@ jobs:
         jekyll: false
       env:
         GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
-    - if: ${{ success() }}
+    - if: ${{ success() && ( inputs.deploy == true ) }}
       uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
         repo: dont-code/plugin-commerce
@@ -304,7 +321,7 @@ jobs:
         jekyll: false
       env:
         GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
-    - if: ${{ success() }}
+    - if: ${{ success() && ( inputs.deploy == true ) }}
       uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
         repo: dont-code/ide-ui
@@ -313,7 +330,7 @@ jobs:
         jekyll: false
       env:
         GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
-    - if: ${{ success() }}
+    - if: ${{ success() && ( inputs.deploy == true ) }}
       uses: crazy-max/ghaction-github-pages@v3.0.0
       with:
         repo: dont-code/preview-ui
