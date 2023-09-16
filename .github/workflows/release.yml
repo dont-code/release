@@ -22,6 +22,7 @@ jobs:
       branch: ${{ inputs.next == true && 'Development' || 'main' }}
       stage: ${{ inputs.next == true && 'next' || 'latest' }}
       version: ${{ inputs.next == true && 'patch' || 'minor' }}
+      build: ${{ inputs.next == true && 'next' || 'production' }}
 
     runs-on: ubuntu-latest
 
@@ -46,7 +47,7 @@ jobs:
         npm install -g nx
     - name: Building Plugins ${{env.stage}}
       run: |
-        npm install --force
+        npm ci
         npm install @dontcode/core@${{env.stage}} --no-optional
         nx run basic:build:production
         nx run basic:test
@@ -82,7 +83,7 @@ jobs:
         ref: ${{env.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
-        npm install --force
+        npm ci
         npm install @dontcode/core@${{env.stage}} @dontcode/plugin-common@${{env.stage}} @dontcode/sandbox@${{env.stage}}
         nx run seed:build:production
         nx run seed:test
@@ -115,9 +116,8 @@ jobs:
         fetch-depth: 0
         ref: ${{env.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
-
     - run: |
-        npm install --force
+        npm ci
         npm install @dontcode/core@${{env.stage}} @dontcode/plugin-common@{{env.stage}} @dontcode/sandbox@{{env.stage}}
         nx run rest:build:production
         nx run rest:test
@@ -141,7 +141,6 @@ jobs:
     - name: Prepare Plugin Rest deployment
       run: nx run rest-tester:build:production --output-path="dist/apps/rest-tester/${{env.stage}}" --base-href "https://dont-code.net/plugin-rest/${{env.stage}}/"
       working-directory: 'plugin-rest'
-
     - name: Building Plugin Report {{env.branch}}
       uses: actions/checkout@v3
       with:
@@ -151,7 +150,7 @@ jobs:
         ref: ${{event.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
-        npm install --force
+        npm ci
         npm install @dontcode/core@{{env.stage}} @dontcode/plugin-common@{{env.stage}} @dontcode/sandbox@{{env.stage}} @dontcode/plugin-basic@{{env.stage}} @dontcode/plugin-fields@{{env.stage}}
         nx run report:build:production
         nx run report:test
@@ -185,7 +184,7 @@ jobs:
         ref: ${{event.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
-        npm install --force
+        npm ci
         npm install @dontcode/core@{{env.stage}} @dontcode/plugin-common@{{env.stage}} @dontcode/sandbox@{{env.stage}} @dontcode/plugin-basic@{{env.stage}} @dontcode/plugin-fields@{{env.stage}}
         nx run commerce:build:production
         nx run commerce:test
@@ -219,7 +218,7 @@ jobs:
         ref: ${{event.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
-        npm install --force
+        npm ci
         npm install @dontcode/core@{{env.stage}} @dontcode/plugin-common@{{env.stage}} @dontcode/sandbox@{{env.stage}} @dontcode/plugin-basic@{{env.stage}} @dontcode/plugin-fields@{{env.stage}} @dontcode/plugin-screen@{{env.stage}} @dontcode/plugin-rest@{{env.stage}} @dontcode/plugin-report@{{env.stage}} @dontcode/plugin-commerce@{{env.stage}}
         nx run ide-ui:build:production
         nx run ide-ui:test
@@ -240,7 +239,7 @@ jobs:
         name: cypress-videos
         path: ide-ui/dist/cypress/apps/ide-ui-e2e/videos
     - name: Prepare IDE Builder deployment {{env.branch}}
-      run: nx run ide-ui:build:production --output-path="dist/apps/ide-ui/${{env.stage}}" --base-href "https://dont-code.net/ide-ui/${{env.stage}}/"
+      run: nx run ide-ui:build:${{env.build}} --output-path="dist/apps/ide-ui/${{env.stage}}" --base-href "https://dont-code.net/ide-ui/${{env.stage}}/"
       working-directory: 'ide-ui'
 
     - name: Building Previewer
@@ -252,7 +251,7 @@ jobs:
         ref: ${{event.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
-        npm install --force
+        npm ci
         npm install @dontcode/core@{{env.stage}} @dontcode/plugin-common@{{env.stage}} @dontcode/sandbox@{{env.stage}}
         nx run preview-ui:build:production
       working-directory: 'preview-ui'
@@ -272,7 +271,7 @@ jobs:
         name: cypress-videos
         path: preview-ui/dist/cypress/apps/preview-ui-e2e/videos
     - name: Prepare Previewer deployment
-      run: nx run preview-ui:build:production --output-path="dist/apps/preview-ui/${{env.stage}}" --base-href "https://dont-code.net/preview-ui/${{env.stage}}/"
+      run: nx run preview-ui:build:${{env.build}} --output-path="dist/apps/preview-ui/${{env.stage}}" --base-href "https://dont-code.net/preview-ui/${{env.stage}}/"
       working-directory: 'preview-ui'
 
     - name: Deploy everything to {{env.stage}}
