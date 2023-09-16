@@ -114,7 +114,7 @@ jobs:
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
         npm ci
-        npm install @dontcode/core@${{env.stage}} @dontcode/plugin-common@{{env.stage}} @dontcode/sandbox@{{env.stage}}
+        npm install @dontcode/core@${{env.stage}} @dontcode/plugin-common@${{env.stage}} @dontcode/sandbox@${{env.stage}}
         nx run rest:build:production
         nx run rest:test
         nx run rest-tester:test
@@ -147,7 +147,7 @@ jobs:
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
         npm ci
-        npm install @dontcode/core@{{env.stage}} @dontcode/plugin-common@{{env.stage}} @dontcode/sandbox@{{env.stage}} @dontcode/plugin-basic@{{env.stage}} @dontcode/plugin-fields@{{env.stage}}
+        npm install @dontcode/core@${{env.stage}} @dontcode/plugin-common@${{env.stage}} @dontcode/sandbox@${{env.stage}} @dontcode/plugin-basic@${{env.stage}} @dontcode/plugin-fields@${{env.stage}}
         nx run report:build:production
         nx run report:test
         nx run report-tester:test
@@ -181,7 +181,7 @@ jobs:
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
         npm ci
-        npm install @dontcode/core@{{env.stage}} @dontcode/plugin-common@{{env.stage}} @dontcode/sandbox@{{env.stage}} @dontcode/plugin-basic@{{env.stage}} @dontcode/plugin-fields@{{env.stage}}
+        npm install @dontcode/core@${{env.stage}} @dontcode/plugin-common@${{env.stage}} @dontcode/sandbox@${{env.stage}} @dontcode/plugin-basic@${{env.stage}} @dontcode/plugin-fields@${{env.stage}}
         nx run commerce:build:production
         nx run commerce:test
         nx run commerce-tester:test
@@ -215,7 +215,7 @@ jobs:
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
         npm ci
-        npm install @dontcode/core@{{env.stage}} @dontcode/plugin-common@{{env.stage}} @dontcode/sandbox@{{env.stage}} @dontcode/plugin-basic@{{env.stage}} @dontcode/plugin-fields@{{env.stage}} @dontcode/plugin-screen@{{env.stage}} @dontcode/plugin-rest@{{env.stage}} @dontcode/plugin-report@{{env.stage}} @dontcode/plugin-commerce@{{env.stage}}
+        npm install @dontcode/core@${{env.stage}} @dontcode/plugin-common@${{env.stage}} @dontcode/sandbox@${{env.stage}} @dontcode/plugin-basic@${{env.stage}} @dontcode/plugin-fields@${{env.stage}} @dontcode/plugin-screen@${{env.stage}} @dontcode/plugin-rest@${{env.stage}} @dontcode/plugin-report@${{env.stage}} @dontcode/plugin-commerce@${{env.stage}}
         nx run ide-ui:build:production
         nx run ide-ui:test
       working-directory: 'ide-ui'
@@ -248,7 +248,7 @@ jobs:
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
         npm ci
-        npm install @dontcode/core@{{env.stage}} @dontcode/plugin-common@{{env.stage}} @dontcode/sandbox@{{env.stage}}
+        npm install @dontcode/core@${{env.stage}} @dontcode/plugin-common@${{env.stage}} @dontcode/sandbox@${{env.stage}}
         nx run preview-ui:build:production
       working-directory: 'preview-ui'
     - run: |
