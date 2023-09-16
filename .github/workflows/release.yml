@@ -143,7 +143,7 @@ jobs:
         repository: dont-code/plugin-report
         path: plugin-report
         fetch-depth: 0
-        ref: ${{event.branch}}
+        ref: ${{env.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
         npm ci
@@ -177,7 +177,7 @@ jobs:
         repository: dont-code/plugin-commerce
         path: plugin-commerce
         fetch-depth: 0
-        ref: ${{event.branch}}
+        ref: ${{env.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
         npm ci
@@ -211,7 +211,7 @@ jobs:
         repository: dont-code/ide-ui
         path: ide-ui
         fetch-depth: 0
-        ref: ${{event.branch}}
+        ref: ${{env.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
         npm ci
@@ -244,7 +244,7 @@ jobs:
         repository: dont-code/preview-ui
         path: preview-ui
         fetch-depth: 0
-        ref: ${{event.branch}}
+        ref: ${{env.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - run: |
         npm ci
