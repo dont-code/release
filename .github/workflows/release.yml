@@ -3,10 +3,6 @@ name: Deploy All Live
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: The version of the release
-        required: true
-        type: string
       next:
         description: Is it a dev / next release ?
         required: true
