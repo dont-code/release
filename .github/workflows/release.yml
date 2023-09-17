@@ -270,7 +270,7 @@ jobs:
       run: nx run preview-ui:build:${{env.build}} --output-path="dist/apps/preview-ui/${{env.stage}}" --base-href "https://dont-code.net/preview-ui/${{env.stage}}/"
       working-directory: 'preview-ui'
 
-    - name: Deploy everything to {{env.stage}}
+    - name: Deploy everything to ${{env.stage}}
       if: ${{ success() && (matrix.browser == 'chromium') && ( inputs.deploy == true ) }}
       uses: gcollin/ghaction-github-pages@main
       with:
@@ -280,6 +280,8 @@ jobs:
         keep_history: false
         multiple_sites: true
         jekyll: false
+      env:
+        GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
     - if: ${{ success() && (matrix.browser == 'chromium') && ( inputs.deploy == true ) }}
       uses: gcollin/ghaction-github-pages@main
       with:
