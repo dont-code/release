@@ -287,7 +287,7 @@ jobs:
       with:
         repo: dont-code/plugin-seed
         target_branch: gh-pages # The branch the action should deploy to.
-        build_dir: dist/apps/seed-tester
+        build_dir: plugin-seed/dist/apps/seed-tester
         keep_history: false
         multiple_sites: true
         jekyll: false
@@ -298,7 +298,7 @@ jobs:
       with:
         repo: dont-code/plugin-rest
         target_branch: gh-pages # The branch the action should deploy to.
-        build_dir: dist/apps/rest-tester
+        build_dir: plugin-rest/dist/apps/rest-tester
         keep_history: false
         multiple_sites: true
         jekyll: false
@@ -309,7 +309,7 @@ jobs:
       with:
         repo: dont-code/plugin-report
         target_branch: gh-pages # The branch the action should deploy to.
-        build_dir: dist/apps/report-tester
+        build_dir: plugin-report/dist/apps/report-tester
         keep_history: false
         multiple_sites: true
         jekyll: false
@@ -320,7 +320,7 @@ jobs:
       with:
         repo: dont-code/plugin-commerce
         target_branch: gh-pages # The branch the action should deploy to.
-        build_dir: dist/apps/commerce-tester
+        build_dir: plugin-commerce/dist/apps/commerce-tester
         keep_history: false
         multiple_sites: true
         jekyll: false
