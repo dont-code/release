@@ -137,7 +137,7 @@ jobs:
     - name: Prepare Plugin Rest deployment
       run: nx run rest-tester:build:production --output-path="dist/apps/rest-tester/${{env.stage}}" --base-href "https://dont-code.net/plugin-rest/${{env.stage}}/"
       working-directory: 'plugin-rest'
-    - name: Building Plugin Report {{env.branch}}
+    - name: Building Plugin Report ${{env.branch}}
       uses: actions/checkout@v3
       with:
         repository: dont-code/plugin-report
@@ -171,7 +171,7 @@ jobs:
       run:  nx run report-tester:build:production --output-path="dist/apps/report-tester/${{env.stage}}" --base-href "https://dont-code.net/plugin-report/${{env.stage}}/"
       working-directory: 'plugin-report'
 
-    - name: Building Plugin Commerce {{env.branch}}
+    - name: Building Plugin Commerce ${{env.branch}}
       uses: actions/checkout@v3
       with:
         repository: dont-code/plugin-commerce
@@ -205,7 +205,7 @@ jobs:
       run:  nx run commerce-tester:build:production --output-path="dist/apps/commerce-tester/${{env.stage}}" --base-href "https://dont-code.net/plugin-commerce/${{env.stage}}/"
       working-directory: 'plugin-commerce'
 
-    - name: Building IDE Builder {{env.branch}}
+    - name: Building IDE Builder ${{env.branch}}
       uses: actions/checkout@v3
       with:
         repository: dont-code/ide-ui
@@ -234,7 +234,7 @@ jobs:
       with:
         name: cypress-videos
         path: ide-ui/dist/cypress/apps/ide-ui-e2e/videos
-    - name: Prepare IDE Builder deployment {{env.branch}}
+    - name: Prepare IDE Builder deployment ${{env.branch}}
       run: nx run ide-ui:build:${{env.build}} --output-path="dist/apps/ide-ui/${{env.stage}}" --base-href "https://dont-code.net/ide-ui/${{env.stage}}/"
       working-directory: 'ide-ui'
 
