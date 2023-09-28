@@ -17,7 +17,6 @@ jobs:
     env:
       branch: ${{ inputs.next == true && 'Development' || 'main' }}
       stage: ${{ inputs.next == true && 'next' || 'latest' }}
-      version: ${{ inputs.next == true && 'patch' || 'minor' }}
       build: ${{ inputs.next == true && 'next' || 'production' }}
 
     runs-on: ubuntu-latest
