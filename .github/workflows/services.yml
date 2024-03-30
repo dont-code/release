@@ -22,14 +22,14 @@ jobs:
 
     steps:
     - name: Checkout common repositories
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: dont-code/core
         path: core
         fetch-depth: 0
         ref: ${{inputs.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         repository: dont-code/common-quarkus-mongo
         path: common-quarkus-mongo
@@ -38,14 +38,14 @@ jobs:
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - name: Create mongo Docker container
       id: build_mongo_docker
-      uses: DigiPie/mongo-action@v1.0.1
+      uses: DigiPie/mongo-action@v2.0.1
       with:
         image_version: latest
         port: 27017
-    - name: Set up JDK 16
-      uses: actions/setup-java@v3
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
       with:
-        java-version: '16'
+        java-version: '21'
         distribution: 'adopt'
         server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
         server-username: MAVEN_USERNAME # env variable for username in deploy
@@ -68,7 +68,7 @@ jobs:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
 
     - name: Build Ide-services
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: dont-code/ide-services
         path: ide-services
@@ -85,7 +85,7 @@ jobs:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
 
     - name: Build Preview-services
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: dont-code/preview-services
         path: preview-services
@@ -102,7 +102,7 @@ jobs:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
 
     - name: Build Data services
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: dont-code/data-services
         path: data-services
@@ -118,7 +118,7 @@ jobs:
       env:
         MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
     - name: Project services
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: dont-code/project-services
         path: project-services
