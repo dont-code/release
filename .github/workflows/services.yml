@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       branch:
-        description: The branch to use. Only main is deployed
+        description: The branch to use. Only main is released, nothing is deployed
         required: false
         default: Development
         type: choice
