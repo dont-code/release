@@ -1,4 +1,4 @@
-name: Deploy All Live
+name: Deploy Websites
 
 on:
   workflow_dispatch:
@@ -26,7 +26,7 @@ jobs:
         browser: [chromium, chrome]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         repository: dont-code/plugins
         path: plugins
@@ -34,7 +34,7 @@ jobs:
         ref: ${{env.branch}}
         token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
     - name: Setup build environment
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: '18.x'
         registry-url: 'https://registry.npmjs.org'
@@ -54,23 +54,23 @@ jobs:
     - run: |
         nx run plugin-tester-e2e:e2e --browser ${{matrix.browser}}
       working-directory: 'plugins'
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       # Test run screenshots only on failure
       if: failure()
       with:
-        name: cypress-screenshots
+        name: cypress-${{matrix.browser}}-screenshots
         path: plugins/dist/cypress/apps/plugin-tester-e2e/screenshots
         # Test run video was always captured, so this action uses "always()" condition
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
-        name: cypress-videos
+        name: cypress-${{matrix.browser}}-videos
         path: plugins/dist/cypress/apps/plugin-tester-e2e/videos
     - name: Prepare Plugins deployment
       run: nx run plugin-tester:build:production --output-path="dist/apps/plugin-tester/${{env.stage}}" --base-href "https://run.dont-code.net/plugins/${{env.stage}}/"
       working-directory: 'plugins'
     - name: Building Plugin Seed ${{env.branch}}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: dont-code/plugin-seed
         path: plugin-seed
@@ -87,24 +87,24 @@ jobs:
     - run: |
         nx run seed-tester-e2e:e2e --browser ${{matrix.browser}}
       working-directory: 'plugin-seed'
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       # Test run screenshots only on failure
       if: failure()
       with:
-        name: cypress-screenshots
+        name: cypress-seed-${{matrix.browser}}-screenshots
         path: plugin-seed/dist/cypress/apps/seed-tester-e2e/screenshots
         # Test run video was always captured, so this action uses "always()" condition
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
-        name: cypress-videos
+        name: cypress-seed-${{matrix.browser}}-videos
         path: plugin-seed/dist/cypress/apps/seed-tester-e2e/videos
     - name: Prepare Plugin Seed Deployment
       run:  nx run seed-tester:build:production --output-path="dist/apps/seed-tester/${{env.stage}}" --base-href "https://run.dont-code.net/plugin-seed/${{env.stage}}/"
       working-directory: 'plugin-seed'
 
     - name: Building Plugin Rest ${{env.branch}}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: dont-code/plugin-rest
         path: plugin-rest
@@ -121,23 +121,23 @@ jobs:
     - run: |
         nx run rest-tester-e2e:e2e --browser ${{matrix.browser}}
       working-directory: 'plugin-rest'
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       # Test run screenshots only on failure
       if: failure()
       with:
-        name: cypress-screenshots
+        name: cypress-rest-${{matrix.browser}}-screenshots
         path: plugin-rest/dist/cypress/apps/rest-tester-e2e/screenshots
         # Test run video was always captured, so this action uses "always()" condition
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
-        name: cypress-videos
+        name: cypress-rest-${{matrix.browser}}-videos
         path: plugin-rest/dist/cypress/apps/rest-tester-e2e/videos
     - name: Prepare Plugin Rest deployment
       run: nx run rest-tester:build:production --output-path="dist/apps/rest-tester/${{env.stage}}" --base-href "https://run.dont-code.net/plugin-rest/${{env.stage}}/"
       working-directory: 'plugin-rest'
     - name: Building Plugin Report ${{env.branch}}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: dont-code/plugin-report
         path: plugin-report
@@ -154,24 +154,24 @@ jobs:
     - run: |
         nx run report-tester-e2e:e2e --browser ${{matrix.browser}}
       working-directory: 'plugin-report'
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       # Test run screenshots only on failure
       if: failure()
       with:
-        name: cypress-screenshots
+        name: cypress-report-${{matrix.browser}}-screenshots
         path: plugin-report/dist/cypress/apps/report-tester-e2e/screenshots
         # Test run video was always captured, so this action uses "always()" condition
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
-        name: cypress-videos
+        name: cypress-report-${{matrix.browser}}-videos
         path: plugin-report/dist/cypress/apps/report-tester-e2e/videos
     - name: Prepare Plugin Report Deployment
       run:  nx run report-tester:build:production --output-path="dist/apps/report-tester/${{env.stage}}" --base-href "https://run.dont-code.net/plugin-report/${{env.stage}}/"
       working-directory: 'plugin-report'
 
     - name: Building Plugin Commerce ${{env.branch}}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: dont-code/plugin-commerce
         path: plugin-commerce
@@ -188,24 +188,24 @@ jobs:
     - run: |
         nx run commerce-tester-e2e:e2e --browser ${{matrix.browser}}
       working-directory: 'plugin-commerce'
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       # Test run screenshots only on failure
       if: failure()
       with:
-        name: cypress-screenshots
+        name: cypress-commerce-${{matrix.browser}}-screenshots
         path: plugin-commerce/dist/cypress/apps/commerce-tester-e2e/screenshots
         # Test run video was always captured, so this action uses "always()" condition
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
-        name: cypress-videos
+        name: cypress-commerce-${{matrix.browser}}-videos
         path: plugin-commerce/dist/cypress/apps/commerce-tester-e2e/videos
     - name: Prepare Plugin Commerce deployment
       run:  nx run commerce-tester:build:production --output-path="dist/apps/commerce-tester/${{env.stage}}" --base-href "https://run.dont-code.net/plugin-commerce/${{env.stage}}/"
       working-directory: 'plugin-commerce'
 
     - name: Building IDE Builder ${{env.branch}}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: dont-code/ide-ui
         path: ide-ui
@@ -221,24 +221,24 @@ jobs:
     - run: |
         nx run ide-ui-e2e:e2e --browser ${{matrix.browser}}
       working-directory: 'ide-ui'
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       # Test run screenshots only on failure
       if: failure()
       with:
-        name: cypress-screenshots
+        name: cypress-ide-${{matrix.browser}}-screenshots
         path: ide-ui/dist/cypress/apps/ide-ui-e2e/screenshots
         # Test run video was always captured, so this action uses "always()" condition
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
-        name: cypress-videos
+        name: cypress-ide-${{matrix.browser}}-videos
         path: ide-ui/dist/cypress/apps/ide-ui-e2e/videos
     - name: Prepare IDE Builder deployment ${{env.branch}}
       run: nx run ide-ui:build:${{env.build}} --output-path="dist/apps/ide-ui/${{env.stage}}" --base-href "https://run.dont-code.net/ide-ui/${{env.stage}}/"
       working-directory: 'ide-ui'
 
     - name: Building Previewer
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: dont-code/preview-ui
         path: preview-ui
@@ -253,17 +253,17 @@ jobs:
     - run: |
         nx run preview-ui-e2e:e2e --browser ${{matrix.browser}}
       working-directory: 'preview-ui'
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       # Test run screenshots only on failure
       if: failure()
       with:
-        name: cypress-screenshots
+        name: cypress-preview-${{matrix.browser}}-screenshots
         path: preview-ui/dist/cypress/apps/preview-ui-e2e/screenshots
         # Test run video was always captured, so this action uses "always()" condition
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
-        name: cypress-videos
+        name: cypress-preview-${{matrix.browser}}-videos
         path: preview-ui/dist/cypress/apps/preview-ui-e2e/videos
     - name: Prepare Previewer deployment
       run: nx run preview-ui:build:${{env.build}} --output-path="dist/apps/preview-ui/${{env.stage}}" --base-href "https://run.dont-code.net/preview-ui/${{env.stage}}/"
