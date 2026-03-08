@@ -158,7 +158,7 @@ jobs:
         mvn --batch-mode deploy
       working-directory: core/java
       env:
-        MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+        MAVEN_USERNAME: nKKiJl
         MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
         MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
     - name: Deploy quarkus-mongo release
@@ -167,6 +167,6 @@ jobs:
         mvn --batch-mode deploy
       working-directory: common-quarkus-mongo
       env:
-        MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+        MAVEN_USERNAME: nKKiJl
         MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
         MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
